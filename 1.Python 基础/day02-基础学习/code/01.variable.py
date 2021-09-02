@@ -22,3 +22,5 @@ MAX_VALUE = 100
 print(MAX_VALUE)
 
 print(divmod(12, 5))  # (2, 2)
+
+# 进制
