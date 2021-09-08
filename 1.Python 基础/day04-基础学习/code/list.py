@@ -46,4 +46,83 @@ print(del2, b)  # [20, 30, 40, 50]
 del3 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 del3.remove(0)
 print(del3)  # [1, 2, 3, 4, 5, 6, 7, 8, 9]
-print(del3.remove(100))  # 报错
+# print(del3.remove(100))  # 报错
+
+visit1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+print(visit1[0])  # 1
+
+visit2 = ["sss", "a", "b", "c"]
+print(visit2.index("sss"))  # 0
+print(visit2.index("b", 2))  # 2
+
+total1 = [1, 1, 2, 23, 43, 5, 6576, 65, 5, 5, 7, 98, 9]
+# print(total1.count(1))  # 2
+print(len(total1))
+
+total1 = [11, 2, 2, 3, 44, 55, 66, 77, 88]
+print(20 in total1)  # False
+print(44 in total1)  # True
+
+# 提取整个列表
+s = [10, 20, 30, 40, 50, 60, 70]
+print(s[:])  # [10, 20, 30, 40, 50, 60, 70]
+
+# [start:] 从 start 索引开始到结尾
+print(s[1:])  # [20, 30, 40, 50, 60, 70]
+
+# [:end] 从头开始直到 end-1
+print(s[:4])  # [10, 20, 30, 40]
+
+# [start:end] 从 start 到 end-1
+print(s[0:5])  # [10, 20, 30, 40, 50]
+
+# [start:end:step] 从 start 提取到 end-1，步长为step
+print(s[1:6:2])  # [20, 40, 60]
+
+y = [10, 20, 30, 40, 50, 60, 70]
+
+# 倒数三位数
+print(y[-3:])  # [50, 60, 70]
+
+# 倒数第五到倒数第三
+print(y[-5:-3])  # [30, 40]
+
+# 步长为负，从右到左依次提取
+print(y[::-1])  # [70, 60, 50, 40, 30, 20, 10]
+
+lie1 = [100, 20, 32, 543, 32, 1, 0]
+# 升序
+lie1.sort()
+print(lie1)  # [0, 1, 20, 32, 32, 100, 543]
+# 降序
+lie1.sort(reverse=True)
+print(lie1)  # [543, 100, 32, 32, 20, 1, 0]
+# 打乱顺序
+import random
+
+# 每次执行结果都是随机的
+random.shuffle(lie1)
+print(lie1)  # [0, 543, 100, 20, 32, 1, 32]
+
+lie2 = [100, 23, 432, 54, 213, 76, 0, 4, 66, 76]
+# 升序
+lie3 = sorted(lie2)
+print(lie3)  # [0, 4, 23, 54, 66, 76, 76, 100, 213, 432]
+# 降序
+lie3 = sorted(lie2, reverse=True)
+print(lie3)  # [432, 213, 100, 76, 76, 66, 54, 23, 4, 0]
+
+lie4 = [20, 10, 30, 50, 40]
+lie5 = reversed(lie4)
+print(lie5)  # <list_reverseiterator object at 0x00000184C1E20508>
+# 通过lise进行转换
+print(list(lie5))  # [40, 50, 30, 10, 20]
+# 第二次即为空
+print(list(lie5))  # []
+
+lie6 = [10, 40, 90, 30, 44, 70]
+print(max(lie6))  # 90
+print(min(lie6))  # 10
+
+lie7 = [1, 6, 2, 4, 9, 4, 4, 87]
+print(sum(lie7))  # 117
