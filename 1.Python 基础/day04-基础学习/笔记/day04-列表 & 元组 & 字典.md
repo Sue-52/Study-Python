@@ -16,7 +16,7 @@ list = [10,20,30,40]
 
 ![image-20210907152614152](img/image-20210907152614152.png)
 
-### 列表
+### 列表（code：01.list.py）
 
 用于存储任意数量、任意类型的数据集合
 
@@ -355,3 +355,279 @@ print(sum(lie7))  # 117
 ```
 
 #### 多维列表
+
+所谓的多维数组就是在数组中嵌套数组，用于更加方便的存储数据。
+
+**二维数组**
+
+![image-20210910151846221](img/image-20210910151846221.png)
+
+```python
+info = [
+  ["高小一",18,30000,"北京"],
+  ["高小2",19,20000,"上海"],
+  ["高小5",20,10000,"深圳"],
+]
+print(info)
+```
+
+![image-20210910153121039](img/image-20210910153121039.png)
+
+获取对应的多维数组元素:
+
+```python
+# 第一个中括号代表着所选的最外层数组的索引
+# 第二个中括号代表所选的在该索引处的数组中的元素
+print(info[0][1])  # 18
+```
+
+### 元组（code：02.tuple.py）
+
+列表属于课表序列，可以任意修改列表中的元素。
+
+但是元组属于不可变序列，不能修改元组中的元素。因此元组没有增、删、改等相关方法。
+
+只支持一下操作：
+1. 索引访问
+2. 切片操作
+3. 连接操作
+4. 成员关系操作
+5. 比较远算操作
+6. 计数：元组长度len()、最大值max()、最小值min()、求和sum()等
+
+#### 元组的创建
+
+1. 通过 “()” 创建元组，小括号也可以省略
+
+~~~python
+tuple1 = (1,2,3,4,5)
+tuple2 = 1,2,3,4,5,6
+print(tuple1,tuple2) # (1, 2, 3, 4, 5) (1, 2, 3, 4, 5, 6)
+~~~
+
+如果元组只用一个元素，则必须后面加都好。因为解释器会把 (1) 解释为整数1，(1,) 则解释为元组 
+
+~~~python
+tuple3 = 123,
+print(tuple3)  # (123,)
+~~~
+
+2. 通过 tuple() 创建元组
+   tuple 可迭代的对象
+
+~~~python
+tuple4 = tuple()
+tuple5 = tuple("!23")
+tuple6 = tuple(range(4))
+tuple7 = tuple([2,3,4,5])
+print(tuple4)  # ()
+print(tuple5)  # ('!', '2', '3')
+print(tuple6)  # (0, 1, 2, 3)
+print(tuple7)  # (2, 3, 4, 5)
+~~~
+
+总结：
+tuple() 可以接受列表、字符串、其他序列类型、迭代器等生成元组。
+list() 可以接受列表、字符串、其他序列类型、迭代器等生成列表。
+
+#### 元组的访问
+
+1. 通过索引访问
+
+~~~python
+visit1 = tuple("abcdefg")
+print(visit1[0]) # 
+~~~
+
+2. sorted() 元组的排序
+
+~~~python
+visit2 = tuple([10,30,40,21,12,87,90])
+sorted(visit2)
+print(visit2)  # (10, 30, 40, 21, 12, 87, 90)
+~~~
+
+#### Zip
+
+zip(列表1.列表2...)将多个列表对应位置的元素组合成为元组，并返回一个zip对象。
+
+```python
+first = [1,2,3]
+second = [4,5,6]
+third = [7,8,9]
+last = zip(first,second,third)
+print(last) # <zip object at 0x000001C1FB4CDD88>
+print(list(last))  # [(1, 4, 7), (2, 5, 8), (3, 6, 9)]
+```
+
+#### 生成器推导式创建元组
+
+生成器推导式与列表推导式类似，只是生成器推导式包括小括号。列表推导式直接生成列表对象，生成器推导式的不是列表也不是元组，而是一个生成器对象。
+
+通过生成器对象，转化成列表或者元组。也可以使用生成器对象的 __next__() 方法及进行遍历，或直接作为迭代器对象使用。
+
+不管什么方式使用，元素范文结束后，如需重新访问其中的元素，必须重新创建生成器对象。
+
+
+~~~python
+s = (x*2 for x in range(5))
+
+print(s.__next__())  # 0
+print(s.__next__())  # 2
+print(s.__next__())  # 4
+~~~
+
+
+#### 总结
+
+1. 元组的核心特点：不可变序列
+2. 元组的访问和处理速度比列表快
+3. 与整数和字符串一样，元组可以作为字典的键，列表则永远不能作为字典的键使用。
+
+### 字典（code：03.dictionary.py）
+
+字典是 “键值对” 的无序可变序列，字典中的每个元素都是一个 “键值对” 。包含了：“键对象” 和 “值对象”。
+
+通过 “键对象” 实现快速获取、删除、更新对应的 “值对象”
+
+“键” 是任意的不可变数据，如：整数、浮点数、字符串、元组。
+
+但是：列表、字典、集合这些可变对象不能作为 “键”。并且 “键” 不可重复
+
+Ex：
+
+~~~python
+dic = {
+  "name":"sue",
+  "age":21,
+  "gender":"male"
+}
+print(dic) # {'name': 'sue', 'age': 21, 'gender': 'male'}
+~~~
+
+#### 字典的创建
+
+1. 使用 {} 创建
+   字面量创建字典
+
+~~~python
+dic = {
+  "name":"sue",
+  "age":21,
+  "gender":"male"
+}
+~~~
+
+2. 使用 dict() 创建
+
+~~~python
+dic1 = dict(name="hhh",age=22)
+print(dic1)
+~~~
+
+3. 使用 zip() 创建
+
+~~~python
+a = ["name","age","gender"]
+b = ["zyc",21,"student"]
+dic3 = dict(zip(a,b))
+print(dic3)  # {'name': 'zyc', 'age': 21, 'gender': 'student'}
+~~~
+
+4. 通过 fromkeys 创建值为空的字典
+
+~~~python
+dic4 = dic.fromkeys(["name","age","job"])
+print(dic4)  # {'name': None, 'age': None, 'job': None}
+~~~
+
+#### 字典的访问
+
+1. 通过 [键] 获取 “值” 。若键不存在，则抛出异常
+
+~~~python
+getDic1 = dict(name="sue",age=26,job="programmer")
+print(getDic1["name"])  # sue
+# print(getDic1["gender"]) # 报错
+~~~
+
+2. 通过 get() 获取 “值”
+   推荐使用。
+   优点：指定键不存在，返回None
+   也可以设定指定键不存在时默认返回的对象，
+
+~~~python
+print(getDic1.get("name"))  # sue
+print(getDic1.get("gender", "male"))  # male
+~~~
+
+3. items() 列出所有的键值对
+
+~~~python
+print(getDic1.items()) 
+# dict_items([('name', 'sue'), ('age', 26), ('job', 'programmer')])
+~~~
+
+4. keys() 获取所有的键
+
+~~~python
+print(getDic1.keys())  # dict_keys(['name', 'age', 'job'])
+~~~
+
+5. values() 获取所有的值
+
+~~~python
+print(getDic1.values())  # dict_values(['sue', 26, 'programmer'])
+~~~
+
+6. len() 获取键值对的个数
+
+~~~python
+print(len(getDic1))  # 3
+~~~
+
+6. in 检查一个 “键” 是否在字典中
+
+~~~python
+print("name" in getDic1)  # True
+print("gender" in getDic1)  # False
+~~~
+
+#### 字典的添加
+
+1. 通过键 = 值的方式进行添加
+   如果键存在，则会将旧的值进行覆盖；如果不存在则添加
+
+~~~python
+addDic1 = {
+  "name":"jyc",
+  "age":21,
+  "gender":"famale",
+  "job":"student"
+}
+addDic1["age"]=22;
+addDic1["address"] = "上海市xxx"
+print(
+    addDic1
+)  # {'name': 'jyc', 'age': 22, 'gender': 'famale', 'job': 'student', 'address': '上海市xxx'}
+~~~
+
+2. 使用 update() 添加
+   将新字典中所有的键值对全部添加到旧字典对象上。如果 key 重复，则覆盖
+
+~~~python
+a = {
+  "name":"sue",
+  "Age":33
+}
+b = {
+  "Age":22
+}
+a.update(b)
+print(a) # {'name': 'sue', 'Age': 22}
+~~~
+
+通过 b 覆盖 a 的键值对
+
+#### 字典的删除
+
