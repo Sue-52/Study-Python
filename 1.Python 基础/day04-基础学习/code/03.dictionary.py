@@ -55,3 +55,44 @@ b = {
 }
 a.update(b)
 print(a) # {'name': 'sue', 'Age': 22}
+
+delDic1 = {
+  "name":"Jason",
+  "age":22,
+  "gender":"male",
+  "hobby":"basketball"
+}
+
+del(delDic1["age"])
+print(delDic1)  # {'name': 'Jason', 'gender': 'male', 'hobby': 'basketball'}
+
+# delDic1.clear()
+# print(delDic1)  # {}
+
+delDic2 = delDic1.pop("gender")
+print(delDic2)  # male
+
+delDic3 = {
+  "name":"Jason",
+  "age":22,
+  "gender":"male",
+  "hobby":"basketball"
+}
+delDic3.popitem()
+print(delDic3)  # {'name': 'Jason', 'age': 22, 'gender': 'male'}
+
+pak = {
+  "name":"sue",
+  "age":22,
+  "hobby":"frisbee"
+}
+a,b,c = pak
+print(a, b, c)  # name age hobby
+a,b,c = pak.items()
+print(a, b, c)  # ('name', 'sue') ('age', 22) ('hobby', 'frisbee')
+a,b,c = pak.values()
+print(a, b, c)  # sue 22 frisbee
+
+a = {}
+a["name"] = "Aqua"
+print(bin(hash("name")))  # -0b1011100010010000111001100111011000001110110110111010110111110
