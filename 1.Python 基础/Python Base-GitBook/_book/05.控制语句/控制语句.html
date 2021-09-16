@@ -1,0 +1,540 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>第五章: Python 控制语句 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="../04.列表和元组和字典/列表&元组&字典.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    前言
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01.Python介绍/介绍.html">
+            
+                <a href="../01.Python介绍/介绍.html">
+            
+                    
+                    第一章: Python 介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02.变量的声明和赋值/变量的声明和赋值.html">
+            
+                <a href="../02.变量的声明和赋值/变量的声明和赋值.html">
+            
+                    
+                    第二章: Python 变量的声明和赋值
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../03.字符串和运算符/字符串&运算符.html">
+            
+                <a href="../03.字符串和运算符/字符串&运算符.html">
+            
+                    
+                    第三章: Python 字符串 & 运算符
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04.列表和元组和字典/列表&元组&字典.html">
+            
+                <a href="../04.列表和元组和字典/列表&元组&字典.html">
+            
+                    
+                    第四章: Python 列表 & 元组 & 字典
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6" data-path="控制语句.html">
+            
+                <a href="控制语句.html">
+            
+                    
+                    第五章: Python 控制语句
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >第五章: Python 控制语句</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h2 id="day04---&#x63A7;&#x5236;&#x8BED;&#x53E5;">day04 - &#x63A7;&#x5236;&#x8BED;&#x53E5;</h2>
+<h3 id="&#x9009;&#x62E9;&#x7ED3;&#x6784;&#xFF08;01judgepy&#xFF09;">&#x9009;&#x62E9;&#x7ED3;&#x6784;&#xFF08;01.judge.py&#xFF09;</h3>
+<p>&#x9009;&#x62E9;&#x7ED3;&#x6784;&#x901A;&#x8FC7;&#x5224;&#x65AD;&#x6761;&#x4EF6;&#x662F;&#x5426;&#x6210;&#x7ACB;&#xFF0C;&#x6765;&#x51B3;&#x5B9A;&#x6267;&#x884C;&#x54EA;&#x4E2A;&#x5206;&#x652F;&#x3002;&#x9009;&#x62E9;&#x7ED3;&#x6784;&#x53C8;&#x591A;&#x79CD;&#x5F62;&#x5F0F;&#xFF0C;&#x5206;&#x4E3A;&#xFF1A;&#x5355;&#x5206;&#x652F;&#x3001;&#x53CC;&#x5206;&#x652F;&#x3001;&#x591A;&#x5206;&#x652F;&#x3002;</p>
+<p><img src="img/image-20210914165933684.png" alt="image-20210914165933684"></p>
+<p><img src="img/image-20210914170641338.png" alt="image-20210914170641338"></p>
+<h4 id="&#x5355;&#x5206;&#x652F;&#x9009;&#x62E9;&#x7ED3;&#x6784;">&#x5355;&#x5206;&#x652F;&#x9009;&#x62E9;&#x7ED3;&#x6784;</h4>
+<p>if &#x8BED;&#x53E5;&#x5355;&#x5206;&#x652F;&#x7ED3;&#x6784;&#x8BED;&#x6CD5;&#xFF1A;
+  if &#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#xFF1A;
+    &#x8BED;&#x53E5;/&#x8BED;&#x53E5;&#x5757;</p>
+<p>&#x5176;&#x4E2D;&#xFF1A;</p>
+<ol>
+<li>&#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#xFF1A;&#x53EF;&#x4EE5;&#x903B;&#x8F91;&#x8868;&#x8FBE;&#x5F0F;&#x3001;&#x5173;&#x7CFB;&#x8868;&#x8FBE;&#x5F0F;&#x3001;&#x7B97;&#x672F;&#x8868;&#x8FBE;&#x5F0F;&#x7B49;&#x3002;</li>
+<li>&#x8BED;&#x53E5;/&#x8BED;&#x53E5;&#x5757;&#xFF1A;&#x53EF;&#x4EE5;&#x662F;&#x4E00;&#x6761;&#x8BED;&#x53E5;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x591A;&#x6761;&#xFF0C;&#x4F46;&#x662F;&#x5FC5;&#x987B;&#x7F29;&#x8FDB;&#x4E00;&#x81F4;&#x3002;</li>
+</ol>
+<pre><code class="lang-python">num = input(<span class="hljs-string">&quot;&#x8BF7;&#x8F93;&#x5165;&#x6570;&#x5B57;&#xFF1A;&quot;</span>)  
+<span class="hljs-keyword">if</span> int(num) &lt;= <span class="hljs-number">10</span>:
+    print(num)
+</code></pre>
+<h4 id="&#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#x8BE6;&#x89E3;">&#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#x8BE6;&#x89E3;</h4>
+<p>&#x5728;&#x9009;&#x62E9;&#x548C;&#x5FAA;&#x73AF;&#x7ED3;&#x6784;&#x4E2D;&#xFF0C;&#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x503C;&#x4E3A; False &#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF1A;
+  False&#x3001;0&#x3001;0.0&#x3001;&#x7A7A;&#x7F6E;None&#x3001;&#x7A7A;&#x5E8F;&#x5217;&#x5BF9;&#x8C61;&#xFF08;&#x7A7A;&#x5217;&#x8868;&#x3001;&#x7A7A;&#x5143;&#x7EC4;&#x3001;&#x7A7A;&#x96C6;&#x5408;&#x3001;&#x7A7A;&#x5B57;&#x5178;&#x3001;&#x7A7A;&#x5B57;&#x7B26;&#x4E32;&#xFF09;&#x3001;&#x7A7A; range &#x5BF9;&#x8C61;&#x3001; &#x7A7A;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;</p>
+<p>&#x5176;&#x4ED6;&#x60C5;&#x51B5;&#x5747;&#x4E3A; True. </p>
+<p>Python &#x6240;&#x6709;&#x5408;&#x6CD5;&#x8868;&#x8FBE;&#x5F0F;&#x90FD;&#x53EF;&#x4EE5;&#x770B;&#x4F5C;&#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#xFF0C;&#x751A;&#x81F3;&#x4E0D;&#x54E6;&#x9614;&#x51FD;&#x6570;&#x8C03;&#x7528;&#x7684;&#x8868;&#x8FBE;&#x5F0F;&#x3002;</p>
+<p><strong>&#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#x4E2D;&#xFF0C;&#x4E0D;&#x80FD;&#x53C8;&#x8D4B;&#x503C;&#x64CD;&#x4F5C; &#x201C;=&#x201D;</strong></p>
+<h4 id="&#x53CC;&#x5206;&#x652F;&#x9009;&#x62E9;&#x7ED3;&#x6784;">&#x53CC;&#x5206;&#x652F;&#x9009;&#x62E9;&#x7ED3;&#x6784;</h4>
+<p>&#x53CC;&#x5206;&#x652F;&#x7ED3;&#x6784;&#x7684;&#x8BED;&#x6CD5;&#xFF1A;</p>
+<pre><code>if &#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#xFF1A;
+    &#x8BED;&#x53E5; 1 / &#x8BED;&#x53E5;&#x5757; 1
+else&#xFF1A;
+    &#x8BED;&#x53E5; 2 / &#x8BED;&#x53E5;&#x5757; 2
+</code></pre><p>&#x3010;&#x64CD;&#x4F5C;&#x7EC3;&#x4E60;&#x3011;&#x901A;&#x8FC7;input&#x8F93;&#x5165;&#x6570;&#x5B57;&#x5982;&#x679C;&#x5927;&#x4E8E;10&#x5219;&#x8FD4;&#x56DE;&#x6570;&#x5B57;&#xFF0C;&#x5C0F;&#x4E8E;&#x5219;&#x8FD4;&#x56DE;&#x4E00;&#x6BB5;&#x6587;&#x5B57;</p>
+<pre><code class="lang-python">num = input(<span class="hljs-string">&quot;&#x8BF7;&#x8F93;&#x5165;&#x6570;&#x5B57;&#xFF1A;&quot;</span>)  
+<span class="hljs-keyword">if</span> int(num) &lt;= <span class="hljs-number">10</span>:
+    print(<span class="hljs-string">&quot;&#x6570;&#x5B57;&#x592A;&#x5C0F;&#x4E86;&quot;</span>) 
+<span class="hljs-keyword">else</span>:
+    print(num)
+</code></pre>
+<h4 id="&#x4E09;&#x5143;&#x6761;&#x4EF6;&#x8FD0;&#x7B97;&#x7B26;">&#x4E09;&#x5143;&#x6761;&#x4EF6;&#x8FD0;&#x7B97;&#x7B26;</h4>
+<p>&#x4E09;&#x5143;&#x8FD0;&#x7B97;&#x7B26;&#x8BED;&#x6CD5;&#x683C;&#x5F0F;&#xFF1A;</p>
+<pre><code class="lang-python">&#x6761;&#x4EF6;&#x4E3A; <span class="hljs-keyword">True</span> &#x65F6;&#x7684;&#x503C;  <span class="hljs-keyword">if</span>  &#xFF08;&#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#xFF09; <span class="hljs-keyword">else</span> &#x6761;&#x4EF6;&#x4E3A;&#x5047;&#x65F6;&#x7684;&#x503C;
+</code></pre>
+<p>&#x3010;&#x64CD;&#x4F5C;&#x3011;&#x901A;&#x8FC7;input&#x8F93;&#x5165;&#x6570;&#x5B57;&#x5982;&#x679C;&#x5927;&#x4E8E;10&#x5219;&#x8FD4;&#x56DE;&#x6570;&#x5B57;&#xFF0C;&#x5C0F;&#x4E8E;&#x5219;&#x8FD4;&#x56DE;&#x4E00;&#x6BB5;&#x6587;&#x5B57;</p>
+<pre><code class="lang-python">print(<span class="hljs-string">&quot;&#x6570;&#x5B57;&#x5C0F;&#x4E8E;10&quot;</span> <span class="hljs-keyword">if</span> int(num) &lt;= <span class="hljs-number">10</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;&#x6570;&#x5B57;&#x5927;&#x4E8E;10&quot;</span>)
+</code></pre>
+<h4 id="&#x591A;&#x5206;&#x652F;&#x9009;&#x62E9;&#x7ED3;&#x6784;">&#x591A;&#x5206;&#x652F;&#x9009;&#x62E9;&#x7ED3;&#x6784;</h4>
+<p>&#x8BED;&#x6CD5;&#xFF1A;</p>
+<pre><code>if &#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F; 1&#xFF1A;
+    &#x8BED;&#x53E5; 1 / &#x8BED;&#x53E5;&#x5757; 1
+elif &#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F; 2&#xFF1A;
+    &#x8BED;&#x53E5; 2 / &#x8BED;&#x53E5;&#x5757; 2
+...
+[else:
+    &#x8BED;&#x53E5; n+1 / &#x8BED;&#x53E5;&#x5757; n+1]
+</code></pre><p>&#x591A;&#x5206;&#x652F;&#x7ED3;&#x6784;&#xFF0C;&#x51E0;&#x4E2A;&#x5206;&#x652F;&#x4E4B;&#x95F4;&#x662F;&#x6709;&#x903B;&#x8F91;&#x5173;&#x7CFB;&#x7684;&#xFF0C;&#x4E0D;&#x80FD;&#x968F;&#x610F;&#x98A0;&#x5012;&#x987A;&#x5E8F;</p>
+<pre><code class="lang-python">score = int(input(<span class="hljs-string">&quot;&#x8BF7;&#x8F93;&#x5165;&#x5206;&#x6570;&#xFF1A;&quot;</span>))
+grade = <span class="hljs-string">&quot;&quot;</span>
+<span class="hljs-keyword">if</span> score &lt; <span class="hljs-number">60</span>:
+    grade=<span class="hljs-string">&quot;&#x4E0D;&#x53CA;&#x683C;&quot;</span>
+<span class="hljs-keyword">elif</span> score &lt;<span class="hljs-number">70</span>:
+    grade=<span class="hljs-string">&quot;&#x53CA;&#x683C;&quot;</span>
+<span class="hljs-keyword">elif</span> score &lt; <span class="hljs-number">80</span>:
+    grade=<span class="hljs-string">&quot;&#x826F;&quot;</span>
+<span class="hljs-keyword">elif</span> score &lt; <span class="hljs-number">90</span>:
+    grade=<span class="hljs-string">&quot;&#x4F18;&#x79C0;&quot;</span>
+<span class="hljs-keyword">else</span>:
+    grade=<span class="hljs-string">&quot;&#x5B8C;&#x7F8E;&quot;</span>
+
+print(<span class="hljs-string">&quot;&#x5206;&#x6570;&#x662F;{0}&#xFF0C;&#x7B49;&#x7EA7;&#x662F;{1}&quot;</span>.format(score,grade))
+</code></pre>
+<p>&#x6BCF;&#x4E2A;&#x5206;&#x652F;&#x90FD;&#x4F7F;&#x7528;&#x4E86;&#x72EC;&#x7ACB;&#x7684;&#x3001;&#x5B8C;&#x6574;&#x7684;&#x989D;&#x5224;&#x65AD;&#xFF0C;&#x987A;&#x5E8F;&#x53EF;&#x4EE5;&#x968F;&#x610F;&#x632A;&#x52A8;&#xFF0C;&#x800C;&#x4E0D;&#x5F71;&#x54CD;&#x7A0B;&#x5E8F;&#x8FD0;&#x884C;&#x3002;</p>
+<h4 id="&#x9009;&#x62E9;&#x7ED3;&#x6784;&#x7684;&#x5D4C;&#x5957;">&#x9009;&#x62E9;&#x7ED3;&#x6784;&#x7684;&#x5D4C;&#x5957;</h4>
+<p>&#x9009;&#x62E9;&#x7ED3;&#x6784;&#x53EF;&#x4EE5;&#x5D4C;&#x5957;&#xFF0C;&#x4F7F;&#x7528;&#x65F6;&#x4E00;&#x5B9A;&#x8981;&#x6CE8;&#x610F;&#x63A7;&#x5236;&#x597D;&#x4E0D;&#x540C;&#x7EA7;&#x522B;&#x4EE3;&#x7801;&#x5F00;&#x7684;&#x7F29;&#x8FDB;&#x91CF;&#xFF0C;&#x56E0;&#x4E3A;&#x7F29;&#x8FDB;&#x91CF;&#x636E;&#x6B38;&#x7684;&#x90A3;&#x4E2A;&#x4E86;&#x4EE3;&#x7801;&#x7684;&#x4ECE;&#x5C5E;&#x5173;&#x7CFB;&#x3002;</p>
+<p><img src="img/image-20210915104846504.png" alt="image-20210915104846504"></p>
+<h3 id="&#x5FAA;&#x73AF;&#x7ED3;&#x6784;&#xFF08;02circulationpy&#xFF09;">&#x5FAA;&#x73AF;&#x7ED3;&#x6784;&#xFF08;02,circulation.py&#xFF09;</h3>
+<p>&#x5FAA;&#x73AF;&#x7ED3;&#x6784;&#x7528;&#x6765;&#x91CD;&#x590D;&#x6267;&#x884C;&#x4E00;&#x6761;&#x6216;&#x591A;&#x6761;&#x8BED;&#x53E5;&#x3002;&#x8868;&#x8FBE;&#x8FD9;&#x6837;&#x7684;&#x903B;&#x8F91;&#xFF1A;&#x5982;&#x679C;&#x7B26;&#x5408;&#x6761;&#x4EF6;&#xFF0C;&#x5219;&#x53CD;&#x590D;&#x6267;&#x884C;&#x5FAA;&#x73AF;&#x4F53;&#x91CC;&#x7684;&#x8BED;&#x53E5;&#x3002;&#x5728;&#x6BCF;&#x6B21;&#x6267;&#x884C;&#x5B8C;&#x540E;&#x90FD;&#x4F1A;&#x5224;&#x65AD;&#x4E00;&#x6B21;&#x6761;&#x4EF6;&#x662F;&#x5426;&#x4E3A; True&#xFF0C;&#x5982;&#x679C;&#x4E3A; True &#x5219;&#x91CD;&#x590D;&#x6267;&#x884C;&#x5FAA;&#x73AF;&#x4F53;&#x4E2D;&#x7684;&#x8BED;&#x53E5;&#x3002;Ex&#xFF1A;</p>
+<p><img src="img/image-20210915110913943.png" alt="image-20210915110913943"></p>
+<p>&#x5FAA;&#x73AF;&#x4F53;&#x91CC;&#x9762;&#x7684;&#x8BED;&#x53E5;&#x81F3;&#x5C11;&#x5E94;&#x8BE5;&#x5305;&#x542B;&#x6539;&#x53D8;&#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x8BED;&#x53E5;&#xFF0C;&#x4EE5;&#x4F7F;&#x5FAA;&#x73AF;&#x8D8B;&#x4E8E;&#x7ED3;&#x675F;&#xFF1B;&#x5426;&#x5219;&#x5C31;&#x4F1A;&#x6210;&#x4E3A;&#x4E00;&#x4E2A;&#x6B7B;&#x5FAA;&#x73AF;</p>
+<h4 id="while-&#x5FAA;&#x73AF;">while &#x5FAA;&#x73AF;</h4>
+<p>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;&#xFF1A;</p>
+<pre><code>while &#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#xFF1A;
+  &#x5FAA;&#x73AF;&#x4F53;&#x8BED;&#x53E5;
+</code></pre><p>&#x3010;&#x64CD;&#x4F5C;&#x3011;&#xFF1A;&#x5FAA;&#x73AF;&#x8F93;&#x51FA; 0 - 10</p>
+<pre><code class="lang-python">num = <span class="hljs-number">0</span>
+<span class="hljs-keyword">while</span> num&lt;<span class="hljs-number">10</span>:
+    num+=<span class="hljs-number">1</span>
+    print(num)
+</code></pre>
+<p>&#x3010;&#x64CD;&#x4F5C;&#x3011;&#xFF1A;&#x6C42; 1-100 &#x7684;&#x603B;&#x548C;&#x3001;&#x5947;&#x6570;&#x548C;&#x3001;&#x5076;&#x6570;&#x548C;</p>
+<pre><code class="lang-python">num = <span class="hljs-number">0</span>
+sum_all = <span class="hljs-number">0</span> <span class="hljs-comment"># &#x603B;&#x548C;</span>
+sum_even = <span class="hljs-number">0</span> <span class="hljs-comment"># &#x5076;&#x6570;&#x548C;</span>
+sum_odd = <span class="hljs-number">0</span> <span class="hljs-comment"># &#x5947;&#x6570;&#x548C;</span>
+<span class="hljs-keyword">while</span> num &lt;=<span class="hljs-number">100</span>:
+    sum_all+=num
+    <span class="hljs-keyword">if</span>(num % <span class="hljs-number">2</span> ==<span class="hljs-number">0</span>):
+        sum_even+=num
+    <span class="hljs-keyword">else</span>:
+        sum_odd+=num
+    num+=<span class="hljs-number">1</span>
+
+print(<span class="hljs-string">&quot;&#x603B;&#x6570;&#x662F;&#xFF1A;{0}&#xFF0C;&#x5076;&#x6570;&#x548C;&#x662F;&#xFF1A;{1}&#xFF0C;&#x5947;&#x6570;&#x548C;&#x662F;&#xFF1A;{2}&quot;</span>.format(sum_all, sum_even, sum_odd))
+</code></pre>
+<h4 id="for-&#x5FAA;&#x73AF;">for &#x5FAA;&#x73AF;</h4>
+<p>for &#x5FAA;&#x73AF;&#x901A;&#x5E38;&#x7528;&#x4E8E;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;&#x7684;&#x904D;&#x5386;&#x3002;&#x8BED;&#x6CD5;&#x683C;&#x5F0F;&#xFF1A;</p>
+<pre><code>for  &#x53D8;&#x91CF;  in  &#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;&#xFF1A;
+    &#x5FAA;&#x73AF;&#x4F53;&#x8BED;&#x53E5;
+</code></pre><p>&#x3010;&#x64CD;&#x4F5C;&#x3011;&#x904D;&#x5386;&#x4E00;&#x4E2A;&#x5143;&#x7EC4;&#x3001;&#x5217;&#x8868;</p>
+<pre><code class="lang-python"><span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>):
+    print(x,end=<span class="hljs-string">&quot;\t&quot;</span>)
+</code></pre>
+<p><strong>&#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;&#xFF1A;</strong></p>
+<ol>
+<li>&#x5E8F;&#x5217;&#x3002;&#x5305;&#x62EC;&#xFF1A;&#x5B57;&#x7B26;&#x4E32;&#x3001;&#x5217;&#x8868;&#x3001;&#x5143;&#x7EC4;</li>
+<li>&#x5B57;&#x5178;</li>
+<li>&#x8FED;&#x4EE3;&#x5668;&#x5BF9;&#x8C61;&#xFF08;iterator&#xFF09;</li>
+<li>&#x751F;&#x6210;&#x5668;&#x51FD;&#x6570;&#xFF08;generator&#xFF09;</li>
+<li>&#x6587;&#x4EF6;&#x5BF9;&#x8C61;</li>
+</ol>
+<p><strong>range &#x5BF9;&#x8C61;&#xFF1A;</strong></p>
+<p>range &#x5BF9;&#x8C61;&#x662F;&#x4E00;&#x4E2A;&#x8FED;&#x4EE3;&#x5668;&#x5BF9;&#x8C61;&#xFF0C;&#x7528;&#x6765;&#x4EA7;&#x751F;&#x6307;&#x5B9A;&#x8303;&#x56F4;&#x7684;&#x6570;&#x5B57;&#x5E8F;&#x5217;&#x3002;&#x683C;&#x5F0F;&#xFF1A;</p>
+<p><code>range(start,end,[step])</code></p>
+<p>&#x751F;&#x6210;&#x7684;&#x6570;&#x5B57;&#x5E8F;&#x5217;&#x4ECE; start &#x5F00;&#x59CB;&#x5230; end &#x7ED3;&#x675F;&#xFF08;&#x4E0D;&#x5305;&#x62EC; end&#xFF09;&#x3002; &#x82E5;&#x6CA1;&#x6709;&#x586B;&#x5199; start &#x5219;&#x9ED8;&#x8BA4;&#x4ECE; 0 &#x5F00;&#x59CB;&#x3002; step &#x662F;&#x53EF;&#x9009;&#x7684;&#x6B65;&#x957F;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E3A; 1 &#x3002;</p>
+<p>ex&#xFF1A;</p>
+<pre><code>for x in range(10):  # 0 ~ 9
+for x in range(3,10):  # 3 ~ 9
+for x in range(3,10,2):  # 3,5,7,9
+</code></pre><h4 id="&#x5D4C;&#x5957;&#x5FAA;&#x73AF;">&#x5D4C;&#x5957;&#x5FAA;&#x73AF;</h4>
+<p>&#x3010;&#x64CD;&#x4F5C;&#x3011;&#x4E5D;&#x4E5D;&#x4E58;&#x6CD5;&#x8868;</p>
+<pre><code class="lang-python"><span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>,<span class="hljs-number">10</span>): <span class="hljs-comment"># &#x904D;&#x5386;&#x5217;</span>
+    sum = <span class="hljs-string">&quot;&quot;</span>
+    <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>,x+<span class="hljs-number">1</span>): <span class="hljs-comment"># &#x904D;&#x5386;&#x884C;</span>
+        sum+=str.format(<span class="hljs-string">&quot;{0}*{1}={2}\t&quot;</span>,x,y,x*y)
+    print(sum)
+</code></pre>
+<h4 id="break-&#x8BED;&#x53E5;">break &#x8BED;&#x53E5;</h4>
+<p>break &#x53EF;&#x4EE5;&#x7528; while &#x5FAA;&#x73AF;&#x548C; for &#x5FAA;&#x73AF;&#xFF0C;&#x7528;&#x6765;&#x7ED3;&#x675F;&#x6574;&#x4E2A;&#x5FAA;&#x73AF;&#x3002;&#x5F53;&#x53C8;&#x5D4C;&#x5957;&#x5FAA;&#x73AF;&#x65F6;&#xFF0C;break&#x53EA;&#x80FD;&#x8DF3;&#x51FA;&#x6700;&#x8FD1;&#x4E00;&#x5C42;&#x7684;&#x5FAA;&#x73AF;&#x3002;</p>
+<pre><code class="lang-python"><span class="hljs-keyword">while</span> <span class="hljs-keyword">True</span>:
+    a = input(<span class="hljs-string">&quot;&#x8BF7;&#x8F93;&#x5165;Q&#x6216;q&quot;</span>)
+    <span class="hljs-keyword">if</span>(a.upper()==<span class="hljs-string">&quot;Q&quot;</span>):
+        print(<span class="hljs-string">&quot;&#x7ED3;&#x675F;&quot;</span>)
+        <span class="hljs-keyword">break</span>
+    <span class="hljs-keyword">else</span>:
+        print(a)
+</code></pre>
+<h4 id="continue-&#x8BED;&#x53E5;">continue &#x8BED;&#x53E5;</h4>
+<p>&#x7528;&#x4E8E;&#x7ED3;&#x675F;&#x672C;&#x6B21;&#x5FAA;&#x73AF;&#xFF0C;&#x7EE7;&#x7EED;&#x4E0B;&#x4E00;&#x6B21;&#x3002;&#x591A;&#x4E2A;&#x5FAA;&#x73AF;&#x5D4C;&#x5957;&#x65F6;&#xFF0C;continue &#x4E5F;&#x7528;&#x4E8E;&#x6700;&#x8FD1;&#x7684;&#x4E00;&#x5C42;&#x5FAA;&#x73AF;</p>
+<p>&#x3010;&#x64CD;&#x4F5C;&#x3011;&#x6C42;&#x5458;&#x5DE5;&#x7684;&#x85AA;&#x8D44;&#x548C;&#x3001;&#x5E73;&#x5747;&#x503C;</p>
+<pre><code class="lang-python">empNum = <span class="hljs-number">0</span>
+salarySum = <span class="hljs-number">0</span>
+salarys = []
+
+<span class="hljs-keyword">while</span> <span class="hljs-keyword">True</span>:
+    s = input(<span class="hljs-string">&quot;&#x8BF7;&#x8F93;&#x5165;&#x5458;&#x5DE5;&#x7684;&#x85AA;&#x8D44;&#xFF1A;&#xFF08;&#x8F93;&#x5165;Q&#x3001;q&#xFF09;&quot;</span>)
+    <span class="hljs-keyword">if</span>(s.upper()==<span class="hljs-string">&quot;Q&quot;</span>):
+        print(<span class="hljs-string">&quot;ok&quot;</span>)
+        <span class="hljs-keyword">break</span>
+    <span class="hljs-keyword">if</span>(float(s)&lt;<span class="hljs-number">0</span>):
+        <span class="hljs-keyword">continue</span>
+    empNum+=<span class="hljs-number">1</span>
+    salarys.append[float(s)]
+    salarySum += float(s)
+
+print(<span class="hljs-string">&quot;&#x5458;&#x5DE5;&#x6570;{0}&quot;</span>.format(empNum))
+print(<span class="hljs-string">&quot;&#x5F55;&#x5165;&#x85AA;&#x8D44;&#xFF1A;&quot;</span>,salarys)
+print(<span class="hljs-string">&quot;&#x5E73;&#x5747;&#x85AA;&#x8D44;{0}&quot;</span>.format(salarySum/empNum))
+</code></pre>
+<h4 id="else-&#x8BED;&#x53E5;">else &#x8BED;&#x53E5;</h4>
+<p>while&#x3001;for &#x5FAA;&#x73AF;&#x53EF;&#x4EE5;&#x9644;&#x5E26;&#x4E00;&#x4E2A; else &#x8BED;&#x53E5;&#xFF08;&#x53EF;&#x9009;&#xFF09;&#x3002;&#x5982;&#x679C; for&#x3001;while &#x8BED;&#x53E5;&#x6CA1;&#x6709;&#x88AB; break &#x8BED;&#x53E5;&#x7ED3;&#x675F;&#xFF0C;&#x5219;&#x4F1A;&#x6267;&#x884C; else &#x8BED;&#x53E5;&#xFF0C;&#x5426;&#x5219;&#x4E0D;&#x6267;&#x884C;&#x3002;
+&#x8BED;&#x6CD5;&#xFF1A;</p>
+<pre><code>while &#x6761;&#x4EF6;&#x8868;&#x8FBE;&#x5F0F;&#xFF1A;
+    &#x5FAA;&#x73AF;&#x4F53;
+else&#xFF1A;
+    &#x8BED;&#x53E5;&#x5757;
+
+for &#x53D8;&#x91CF; in &#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;&#xFF1A;
+    &#x5FAA;&#x73AF;&#x4F53;
+else&#xFF1A;
+    &#x8BED;&#x53E5;&#x5757;
+</code></pre><h4 id="&#x5FAA;&#x73AF;&#x4F18;&#x5316;&#x6280;&#x5DE7;">&#x5FAA;&#x73AF;&#x4F18;&#x5316;&#x6280;&#x5DE7;</h4>
+<ol>
+<li>&#x5C3D;&#x91CF;&#x51CF;&#x5C11;&#x5FAA;&#x73AF;&#x5185;&#x90E8;&#x4E0D;&#x5FC5;&#x8981;&#x7684;&#x8BA1;&#x7B97;</li>
+<li>&#x5D4C;&#x5957;&#x5FAA;&#x73AF;&#x4E2D;&#xFF0C;&#x5C3D;&#x91CF;&#x51CF;&#x5C11;&#x5185;&#x5C42;&#x5FAA;&#x73AF;&#x7684;&#x8BA1;&#x7B97;&#xFF0C;&#x5C3D;&#x53EF;&#x80FD;&#x5411;&#x5916;&#x63D0;</li>
+<li>&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x67E5;&#x8BE2;&#x8F83;&#x5FEB;&#xFF0C;&#x5C3D;&#x91CF;&#x4F7F;&#x7528;&#x5C40;&#x90E8;&#x53D8;&#x91CF;</li>
+<li>&#x8054;&#x7CFB;&#x591A;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x4F7F;&#x7528; join() &#x800C;&#x4E0D;&#x4F7F;&#x7528; +</li>
+<li>&#x5217;&#x8868;&#x5143;&#x7D20;&#x63D2;&#x5165;&#x548C;&#x5220;&#x9664;&#xFF0C;&#x5C3D;&#x91CF;&#x5728;&#x5217;&#x8868;&#x5C3E;&#x90E8;&#x64CD;&#x4F5C;</li>
+</ol>
+<h4 id="&#x4F7F;&#x7528;-zip-&#x5E76;&#x884C;&#x8FED;&#x4EE3;">&#x4F7F;&#x7528; zip() &#x5E76;&#x884C;&#x8FED;&#x4EE3;</h4>
+<p>&#x901A;&#x8FC7;&#x4F7F;&#x7528; zip() &#x51FD;&#x6570;&#x5BF9;&#x591A;&#x4E2A;&#x5E8F;&#x5217;&#x53CA;&#x9006;&#x884C;&#x5E76;&#x884C;&#x8FED;&#x4EE3;&#xFF0C;zip() &#x51FD;&#x6570;&#x5728;&#x6700;&#x77ED;&#x5E8F;&#x5217; &#x201C;&#x7528;&#x5B8C;&#x201D; &#x65F6;&#x5C31;&#x4F1A;&#x505C;&#x6B62;&#x3002;</p>
+<p>&#x3010;&#x64CD;&#x4F5C;&#x3011;&#x6D4B;&#x8BD5; zip() &#x5E76;&#x884C;&#x8FED;&#x4EE3;</p>
+<pre><code class="lang-python">names = (<span class="hljs-string">&quot;Jason&quot;</span>,<span class="hljs-string">&quot;Eason&quot;</span>,<span class="hljs-string">&quot;Forrest&quot;</span>,<span class="hljs-string">&quot;Sue&quot;</span>)
+ages = (<span class="hljs-number">20</span>,<span class="hljs-number">22</span>,<span class="hljs-number">23</span>,<span class="hljs-number">21</span>)
+
+<span class="hljs-keyword">for</span> names,ages <span class="hljs-keyword">in</span> zip(names,ages):
+    print(<span class="hljs-string">&quot;{0}--{1}&quot;</span>.format(names,ages))
+
+<span class="hljs-comment"># Jason--20</span>
+<span class="hljs-comment"># Eason--22</span>
+<span class="hljs-comment"># Forrest--23</span>
+<span class="hljs-comment"># Sue--21</span>
+</code></pre>
+<h3 id="&#x63A8;&#x5BFC;&#x5F0F;">&#x63A8;&#x5BFC;&#x5F0F;</h3>
+<h4 id="&#x63A8;&#x5BFC;&#x5F0F;&#x521B;&#x5EFA;&#x5E8F;&#x5217;">&#x63A8;&#x5BFC;&#x5F0F;&#x521B;&#x5EFA;&#x5E8F;&#x5217;</h4>
+<p>&#x63A8;&#x5BFC;&#x5F0F;&#x662F;&#x4ECE;&#x4E00;&#x4E2A;&#x6216;&#x8005;&#x591A;&#x4E2A;&#x8FED;&#x4EE3;&#x5668;&#x5FEB;&#x901F;&#x521B;&#x5EFA;&#x5E8F;&#x5217;&#x7684;&#x4E00;&#x79CD;&#x65B9;&#x6CD5;&#x3002;&#x5B83;&#x53EF;&#x4EE5;&#x5C06;&#x5FAA;&#x73AF;&#x548C;&#x6761;&#x4EF6;&#x5224;&#x65AD;&#x7ED3;&#x5408;&#xFF0C;&#x4ECE;&#x800C;&#x907F;&#x514D;&#x5197;&#x4F59;&#x7684;&#x4EE3;&#x7801;&#x3002;&#x63A8;&#x5BFC;&#x5F0F;&#x65F6;&#x5178;&#x578B;&#x7684; Python &#x98CE;&#x683C;&#x3002;</p>
+<p><strong>&#x5217;&#x8868;&#x63A8;&#x5BFC;&#x5F0F;&#xFF1A;</strong></p>
+<p>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;&#xFF1A;</p>
+<pre><code>[&#x8868;&#x8FBE;&#x5F0F; for item in &#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;]
+&#x6216;
+{&#x8868;&#x8FBE;&#x5F0F; for item in &#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61; if &#x6761;&#x4EF6;&#x5224;&#x65AD;}
+</code></pre><p>&#x6848;&#x4F8B;&#xFF1A;</p>
+<pre><code class="lang-python">print([x <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>)])  <span class="hljs-comment"># [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
+print([x * <span class="hljs-number">2</span> <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>)])  <span class="hljs-comment"># [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]</span>
+print([x * <span class="hljs-number">2</span> <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>) <span class="hljs-keyword">if</span> x % <span class="hljs-number">5</span> == <span class="hljs-number">0</span>])  <span class="hljs-comment"># [0, 10]</span>
+print([x <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-string">&quot;abcde&quot;</span>])  <span class="hljs-comment"># [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;]</span>
+cell = [(row,col) <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>,<span class="hljs-number">10</span>)<span class="hljs-keyword">for</span> col <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>,<span class="hljs-number">10</span>)]
+print(cell)
+</code></pre>
+<h4 id="&#x5B57;&#x5178;&#x63A8;&#x5BFC;&#x5F0F;">&#x5B57;&#x5178;&#x63A8;&#x5BFC;&#x5F0F;</h4>
+<p>&#x683C;&#x5F0F;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>{key_expression : value_expression for &#x8868;&#x8FBE;&#x5F0F; in &#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;}
+</code></pre><p>&#x5176;&#x4E5F;&#x53EF;&#x4EE5;i&#x4FFA;&#x5BB6; if &#x6761;&#x4EF6;&#x5224;&#x65AD;&#x3001;&#x591A;&#x4E2A;&#x5FAA;&#x73AF;&#x7B49;</p>
+<pre><code class="lang-python">content = <span class="hljs-string">&quot;I love JYC before I give up&quot;</span>
+count = {c:content.count(c) <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> content}
+print(count)
+</code></pre>
+<p>&#x6B63;&#x5E38;&#x5199;&#x6CD5;&#xFF1A;</p>
+<pre><code class="lang-python">total = {}
+<span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> content:
+    total[x]=content.count(x)
+
+print(total)
+</code></pre>
+<h4 id="&#x96C6;&#x5408;&#x63A8;&#x5BFC;&#x5F0F;">&#x96C6;&#x5408;&#x63A8;&#x5BFC;&#x5F0F;</h4>
+<p>&#x548C;&#x5217;&#x8868;&#x63A8;&#x5BFC;&#x5F0F;&#x7C7B;&#x4F3C;&#xFF1A;</p>
+<pre><code>{&#x8868;&#x8FBE;&#x5F0F; for item in &#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;}
+&#x6216;
+{&#x8868;&#x8FBE;&#x5F0F; for item in &#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61; if &#x6761;&#x4EF6;&#x5224;&#x65AD;}
+</code></pre><pre><code class="lang-python">text = {x <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>,<span class="hljs-number">100</span>) <span class="hljs-keyword">if</span> x % <span class="hljs-number">8</span> == <span class="hljs-number">0</span>}
+print(text)  <span class="hljs-comment"># {32, 64, 96, 8, 40, 72, 16, 48, 80, 24, 56, 88}</span>
+</code></pre>
+<h4 id="&#x751F;&#x6210;&#x5668;&#x63A8;&#x5BFC;&#x5F0F;&#xFF08;&#x751F;&#x6210;&#x5143;&#x7EC4;&#xFF09;">&#x751F;&#x6210;&#x5668;&#x63A8;&#x5BFC;&#x5F0F;&#xFF08;&#x751F;&#x6210;&#x5143;&#x7EC4;&#xFF09;</h4>
+<p>&#x56E0;&#x4E3A;&#x6700;&#x540E;&#x6211;&#x4EEC;&#x6240;&#x83B7;&#x5F97;&#x7684;&#x662F;&#x4E00;&#x4E2A; &#x201C;&#x751F;&#x6210;&#x5668;&#x5BF9;&#x8C61;&#x201D;&#x3002;&#x663E;&#x7136;&#xFF0C;&#x5143;&#x7EC4;&#x5E76;&#x6CA1;&#x6709;&#x63A8;&#x5BFC;&#x5F0F;</p>
+<p>&#x4E00;&#x4E2A;&#x751F;&#x6210;&#x5668;&#x53EA;&#x80FD;&#x8FD0;&#x884C;&#x4E00;&#x6B21;&#x3002;&#x7B2C;&#x4E00;&#x6B21;&#x8FED;&#x4EE3;&#x53EF;&#x4EE5;&#x83B7;&#x5F97;&#x6570;&#x636E;&#xFF0C;&#x7B2C;&#x4E8C;&#x6B21;&#x8FED;&#x4EE3;&#x53D1;&#x73B0;&#x6570;&#x636E;&#x5C31;&#x5DF2;&#x7ECF;&#x6CA1;&#x4E86;&#x3002;&#xFF08;&#x6240;&#x63A7;&#x5236;&#x7684;&#x662F;&#x6307;&#x9488;&#xFF0C;&#x5F53;&#x6240;&#x9700;&#x8868;&#x8FBE;&#x5F0F;&#x8D70;&#x5B8C;&#x540E;&#xFF0C;&#x6307;&#x9488;&#x4E5F;&#x8DDF;&#x7740;&#x8D70;&#x5B8C;&#x4E86;&#xFF09;</p>
+<pre><code class="lang-python">gnt = (x <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>,<span class="hljs-number">100</span>) <span class="hljs-keyword">if</span> x % <span class="hljs-number">9</span> == <span class="hljs-number">0</span>)
+print(tuple(gnt))  <span class="hljs-comment"># (9, 18, 27, 36, 45, 54, 63, 72, 81, 90, 99)</span>
+print(tuple(gnt))  <span class="hljs-comment"># ()</span>
+</code></pre>
+<p><strong>&#x4EE3;&#x7801;&#xFF1A;<a href="code/01.judge.py">code1</a></strong>
+<strong>&#x4EE3;&#x7801;&#xFF1A;<a href="code/02,circulation.py">code1</a></strong></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../04.列表和元组和字典/列表&元组&字典.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 第四章: Python 列表 & 元组 & 字典">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"第五章: Python 控制语句","level":"1.6","depth":1,"previous":{"title":"第四章: Python 列表 & 元组 & 字典","level":"1.5","depth":1,"path":"04.列表和元组和字典/列表&元组&字典.md","ref":"./04.列表和元组和字典/列表&元组&字典.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"05.控制语句/控制语句.md","mtime":"2021-09-16T09:18:11.879Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-09-16T09:00:14.196Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
