@@ -302,3 +302,251 @@ deepCopy()
 
 #### 参数的类型
 
+**位置参数：**
+
+函数调用时，实参默认按位置顺序传递，需要个数和形参匹配。按位置传递的参数，称为：“位置参数”
+
+【操作】测试
+
+~~~python
+def fn01(a,b,c):
+    return a+b+c
+
+print(fn01(1,2,3)) # 6
+print(fn01(1,3)) # 报错
+~~~
+
+**默认值参数：**
+
+将形参设置为默认参数，这样传递参数时参数时可选的。默认值参数放在位置参数的后面
+
+【操作】测试
+
+~~~python
+def fn01(a,b,c,d=10,e=11):
+    return a+b+c+d+e
+
+print(fn01(1,2,3))
+print(fn01(1,3))
+~~~
+
+**命名参数：**
+
+按照形参的名称传递参数
+
+【操作】测试
+
+~~~python
+def fn01(a, b, c):
+    print(a,b,c)
+    return a + b + c
+
+print(fn01(1, 2, 3)) # 位置参数
+print(fn01(b=20,c= 12,a=13)) # 命名参数
+~~~
+
+**可变参数：**
+
+指的是 “可变数量的参数”。分两种情况：
+
+1. *param（一个星号），将多个参数收集到一个“元组”对象中。
+2. **param（两个星号），将多个参数收集到一个“字典”对象中。
+
+【操作】可变参数处理
+
+~~~python
+def fn01(a,b,*c):
+    print(a,b,c)
+fn01(8,9,19,20) # 8 9 (19, 20)
+
+
+def fn02(a,b,**c):
+    print(a,b,c)
+fn02(8,9,name="sue",age=18) # 8 9 {'name': 'sue', 'age': 18}
+
+def fn03(a,b,*c,**d):
+    print(a,b,c,d)
+fn03(8,9,20,12,"sue",name="sue",age=18,flag=True) # 8 9 (20, 12, 'sue') {'name': 'sue', 'age': 18, 'flag': True}
+~~~
+
+**强制命名参数：**
+
+在带星号的“可变参数”后面增加新的参数，必须是“强制命名参数”
+
+【操作】测试
+
+~~~python
+def fn01(*a,b,c):
+    print(a,b,c)
+# fn01(2,3,4) # 报错，由于 a 是可变参数，将2，3，4全部手机。造成了 b 和 c 没有赋值
+fn01(2, 3, 4, b=13, c=10)  # (2, 3, 4) 13 10
+~~~
+
+
+#### Lambda 表达式
+
+`lambda` 表达式可以用来声明匿名函数。lambda 函数是一种简单的、在同行中定义函数的方法。lambda 函数实际生成了一个函数对象
+
+`lambda` 表达式只允许宝库哦一个表达式，不能包含复杂语句，该表达式的计算结果就是函数的返回值。
+
+`lambda` 表达式语法：
+
+~~~
+lambda arg1,arg2,arg3 ...: <表达式>
+~~~
+
+> arg1、arg2、arg3 为函数的参数。
+> <表达式> 箱单能与函数体。运算结果是：表达式的运算结果
+
+【操作】lambda表达式使用
+
+~~~python
+fn = lambda a,b,c:a+b+c
+print(fn)  # <function <lambda> at 0x000002465AC3E8B8>
+print(fn(1, 2, 3))  # 6
+
+g = [lambda a:a*2,lambda b:b*3,lambda c:c*4]
+print(
+    g
+)  # [<function <lambda> at 0x000001FB6F06EA68>, <function <lambda> at 0x000001FB6F06EAF8>, <function <lambda> at 0x000001FB6F06EB88>]
+print(g[0](6), g[1](7), g[2](8))  # 12 21 32
+~~~
+
+#### eval() 函数
+
+将字符串 str 当成有效的表达式来求值并返回计算机结果。
+
+语法：
+
+~~~
+eval(source[,globals[,locals]]) -> value
+~~~
+
+**参数：**
+
+source：一个 Python 表达式或者函数 compile() 返回的代码对象
+globals：可选。必须是 dictionary
+locals：可选。任意映射对象
+
+【操作】eval() 函数使用
+
+~~~python
+eval("print('Hello')")  # Hello
+a = 10
+b = 20
+c = eval("a+b")
+print(c)  # 30
+
+dict01 = dict(a=100,b=200)
+d = eval("a+b",dict01)
+print(d)  # 300
+~~~
+
+### 递归函数
+
+递归函数指的是：自己调用自己的函数，在函数体内部直接或者间接的自己调用自己。递归类似于数学中的“数学归纳法”。每个递归函数必须包含两个部分：
+
+1. 终止条件
+   - 表示递归什么时候结束。一般用于返回值，不在调用自己。
+2. 递归步骤
+   - 把第 n 步的值和第 n-1 步相关联
+
+递归函数由于会创建大量的函数对象，过量的消耗内存和运算能力。在处理大量数据时，谨慎使用。
+
+【操作】递归计算阶乘
+
+~~~python
+def factorial(n):
+    if n == 1: return 1
+    return n*factorial(n-1)
+for x in range(1,6):
+    print(x,"!=",factorial(x))
+~~~
+
+结果：
+
+~~~
+1 != 1
+2 != 2
+3 != 6
+4 != 24
+5 != 120
+~~~
+
+### 嵌套函数
+
+在函数内部定义函数
+
+【操作】定义
+
+~~~python
+def fn01():
+    print("running...01")
+
+    def fn02():
+        print("running...02")
+    fn02()
+fn01()
+# running...01
+# running...02
+~~~
+
+**使用情况：**
+
+1. 封装 - 数据隐藏
+   - 外部无法访问 “嵌套数据”
+2. 贯彻 DRY（Don't Repeat Yourself）原则
+   - 嵌套函数，可以让我们在函数内部避免重复代码。
+3. 闭包
+
+
+~~~python
+def get_name(isChinese,name,familyName):
+    def print_name(a,b):
+        print("{0} {1}".format(a,b))
+    
+    if isChinese:
+        print_name(familyName,name)
+    else:
+        print_name(name,familyName)
+
+get_name(True,"傲","苏")
+get_name(False,"Edmond","Dantes")
+~~~
+
+#### nonlocal 关键字
+
+nonlocal 用来声明外层的局部变量。
+global 用来声明全局变量。
+
+【操作】测试
+
+~~~python
+def outer():
+    a = 100
+    def inner():
+        nonlocal a
+        print("inner a: {0}".format(a))
+        a = 200
+    inner()
+    print("outer a: {0}".format(a))
+outer()
+~~~
+
+**作用：将外部函数的变量适用于内部变量中，并且内部变量进行修改时，外部的变量也会发生变化**
+
+### LEGB 规则
+
+Python 在查找 “名称” 时，是按照 LEDG 规则查找的： 
+Local --> Enclosed --> Global --> Built in
+
+`Local`     指的是函数或者类的方法内部
+`Enclosed`  指的是嵌套函数（闭包）
+`Global`    指的是波块中的全局变量
+`Built in`  指的是 Python 为自己保留的特殊名称
+
+如果某个 name 映射在局部（local）命名空间中没有找到，接下拉就会在闭包作用域（enclosed）进行搜索，以此类推。
+
+最后都没找到就会生成一个 NameError
+
+    
