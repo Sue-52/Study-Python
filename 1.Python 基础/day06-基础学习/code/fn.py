@@ -213,7 +213,7 @@ import copy
 # def get_name(isChinese,name,familyName):
 #     def print_name(a,b):
 #         print("{0} {1}".format(a,b))
-    
+
 #     if isChinese:
 #         print_name(familyName,name)
 #     else:
@@ -224,12 +224,19 @@ import copy
 
 
 
-def outer():
-    a = 100
-    def inner():
-        nonlocal a
-        print("inner a: {0}".format(a))
-        a = 200
-    inner()
-    print("outer a: {0}".format(a))
-outer()
+# def outer():
+#     a = 100
+#     def inner():
+#         nonlocal a
+#         print("inner a: {0}".format(a))
+#         a = 200
+#     inner()
+#     print("outer a: {0}".format(a))
+# outer()
+
+
+
+# 自定义的方法 -- 引入的方法名必须和文件名一样
+# import gointo as money
+
+# money.make_money(300)
