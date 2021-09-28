@@ -106,13 +106,180 @@
 
 
 
-class Get_Salary:
+# class Get_Salary:
 
-    def __call__(self, salary):
-        yearSalary = salary*12
-        daySalary = salary//22.5
-        hourSalary = daySalary//12
+#     def __call__(self, salary):
+#         yearSalary = salary*12
+#         daySalary = salary//22.5
+#         hourSalary = daySalary//12
 
-        return dict(年薪=yearSalary,月薪=salary,日薪=daySalary,小时工=hourSalary)
-p1 = Get_Salary()
-print(p1(8000))
+#         return dict(年薪=yearSalary,月薪=salary,日薪=daySalary,小时工=hourSalary)
+# p1 = Get_Salary()
+# print(p1(8000))
+
+
+
+
+
+# class Person:
+#     def hello_world(self):
+#         print("Hello World")
+
+# def say_Hi(name):
+#     print("Hello,{0}".format(name))
+
+# p1 = Person()
+# # p1.say_Hi("Js")  # 'Person' object has no attribute 'say_Hi'
+
+# Person.say = say_Hi
+# # p1.say("!23")  # say_Hi() takes 1 positional argument but 2 were given
+# Person.say("he")
+
+
+
+
+# class Employee:
+
+#     def __init__(self,name,age):
+#         self.name = name
+#         self.__age = age
+
+#     def  __work(self):
+#         print("Good Good Work, Day Day Up")
+
+
+# p1 = Employee("Allen",12)
+# print(p1.name)  # Allen
+# # print(p1.age)  # 'Employee' object has no attribute 'age'
+# print(p1._Employee__age)  # 12
+# # p1.__work()  # 'Employee' object has no attribute '__work'
+# p1._Employee__work()  # Good Good Work, Day Day Up
+
+
+
+
+# class Employee:
+
+#     @property
+#     def money(self):
+#         print("working...")
+#         return 20000
+
+
+# p1 = Employee()  # 1. working...
+# # p1.money()  # 'int' object is not callable
+# # getMoney = p1.money
+# # print(getMoney)  # 2. 20000
+# print(p1.money)  # 3. working...  4. 20000
+
+
+
+
+# class Employee:
+
+#     def __init__(self,name,salary):
+#         self.__name = name
+#         self.__salary = salary
+
+#     def get_salary(self):
+#         # print("薪水：{0}".format(self.__salary))
+#         return self.__salary
+
+#     def set_salary(self,salary):
+#         if 10000<salary<50000:
+#             self.__salary = salary
+#             print("薪资录入成功")
+#         else:
+#             print("薪资录入失败")
+
+# p1 = Employee("Eason",30000)
+# print("{0}薪资：{1}".format(p1._Employee__name, p1.get_salary()))  # Eason薪资：30000
+# # p1.set_salary(3000) # 薪资录入失败
+# p1.set_salary(20000)  # 薪资录入成功
+# print("{0}薪资：{1}".format(p1._Employee__name, p1.get_salary()))  # Eason薪资：20000
+
+
+
+# class Employee:
+
+#     def __init__(self,name,salary):
+#         self.__name = name
+#         self.__salary = salary
+
+#     @property
+#     def salary(self):
+#         # print("薪水：{0}".format(self.__salary))
+#         return self.__salary
+
+#     @salary.setter
+#     def salary(self,salary):
+#         if 10000<salary<50000:
+#             self.__salary = salary
+#             print("薪资录入成功")
+#         else:
+#             print("薪资录入失败")
+
+# p1 = Employee("Eason",30000)
+# print("{0}薪资：{1}".format(p1._Employee__name, p1._Employee__salary))  # Eason薪资：30000
+# p1.salary = -2000  # 薪资录入失败
+# p1.salary = 20000  # 薪资录入成功
+# print("{0}薪资：{1}".format(p1._Employee__name, p1._Employee__salary))  # Eason薪资：20000
+
+
+
+
+# class Person:
+
+#     def __init__(self,name,age):
+#         self.name = name
+#         self.__age = age
+
+#     def say_hi(self):
+#         print("Hello,Bro!!!")
+
+# class Children(Person):
+
+#     # 子类继承父类的属性
+#     def __init__(self,name,age,score):
+#         Person.__init__(self,name,age)
+#         self.score = score
+
+
+# print(
+#     Children.mro()
+# )  # [<class '__main__.Children'>, <class '__main__.Person'>, <class 'object'>]
+# c1 = Children("Jason",23,100)
+# c1.say_hi()  # Hello,Bro!!!  继承了父类的属性方法
+
+# # 访问私有属性
+# # 无法访问通过子类访问父类的私有属性
+# print(c1._Person__age)  # 23
+# print(dir(c1)) # ...各种实现
+
+
+
+
+
+class Person:
+
+    def __init__(self,name,age):
+        self.name = name
+        self.__age = age
+
+    def say_hi(self):
+        print("Hello,Bro!!!")
+class Children(Person):
+
+    # 子类继承父类的属性
+    def __init__(self,name,age,score):
+        Person.__init__(self,name,age)
+        self.score = score
+
+    def say_hi(self):
+        print("What's Up?")
+
+s1 = Children("Sue",21,100)
+s1.say_hi()  # What's Up?
+
+print(dir(Person))
+print(Children.mro())

@@ -385,3 +385,299 @@ p1 = Get_Salary()
 print(p1(8000)) # 无需在添加类名来用使用
 ~~~
 
+#### 方法的重载
+
+在其他语言中，可以定义多个重名的方法，只要保证方法签名唯一即可。方法标签名包括三个部分：方法名、参数数量、参数类型
+
+Python 中，方法的参数没有声明类型（调用时圈定参数的类型），参数的数量可以由可变参数控制。因此，Python 中没有方法的重载。定义一个方法即可有多种调用方式，相当于实现了其他语言中的方法重载。
+
+如果在类中定义了多个重名方法，只有最后一个能生效。
+
+【操作】测试
+
+~~~python
+class Person:
+    def say_Hi(self):
+        print("Hello")
+
+    def say_Hi(self,name):
+        print("Hello,{0}".format(name))
+
+p1 = Person()
+p1.say_Hi("Js")  # say_Hi() missing 1 required positional argument: 'name'
+~~~
+
+#### 方法的动态性
+
+Python 是动态语言，我们可以动态的为类添加新的方法，或者动态的修改类已有的方法。
+
+【操作】测试
+
+~~~python
+class Person:
+    def hello_world(self):
+        print("Hello World")
+
+def say_Hi(name):
+    print("Hello,{0}".format(name))
+
+p1 = Person()
+# p1.say_Hi("Js")  # 'Person' object has no attribute 'say_Hi'
+
+Person.say = say_Hi
+# p1.say("!23")  # say_Hi() takes 1 positional argument but 2 were given
+Person.say("he")
+~~~
+
+
+#### 私有属性和私有方法
+
+Python 对于类的成员没有严格的访问控制限制，这与其他面向对象有区别。
+注意点：
+
+1. 通常约定，两下划线开头的属性是私有属性（private）。其他的为公共的（public）
+2. 类内部可以访问私有属性（方法）
+3. 类外部不能直接访问私有属性（方法）
+4. 类外部可以通过 “\_类名\_\_私有属性（方法）名” 访问私有属性方法
+
+【注意：】方法本质上也是属性，只不过是通过()执行而已。
+
+【操作】测试私有属性和方法
+
+~~~python
+class Employee:
+
+    def __init__(self,name,age):
+        self.name = name
+        self.__age = age
+
+    def  __work(self):
+        print("Good Good Work, Day Day Up")
+
+
+p1 = Employee("Allen",12)
+print(p1.name)  # Allen
+# print(p1.age)  # 'Employee' object has no attribute 'age'
+print(p1._Employee__age)  # 12
+# p1.__work()  # 'Employee' object has no attribute '__work'
+p1._Employee__work()  # Good Good Work, Day Day Up
+~~~
+
+
+#### @property 装饰器
+
+@property 可以将一个方法的调用方式变成“属性调用”。
+
+【操作】基本使用
+
+~~~python
+class Employee:
+
+    @property
+    def money(self):
+        print("working...")
+        return 20000
+
+
+p1 = Employee()  # 1. working...
+# p1.money()  # 'int' object is not callable
+getMoney = p1.money
+print(getMoney)  # 2. 20000
+print(p1.money)  # 3. working...  4. 20000
+~~~
+
+**_get 和 _set**
+
+【操作】设置私人属性并修改薪资
+
+~~~python
+class Employee:
+
+    def __init__(self,name,salary):
+        self.__name = name
+        self.__salary = salary
+
+    def get_salary(self):
+        # print("薪水：{0}".format(self.__salary))
+        return self.__salary
+
+    def set_salary(self,salary):
+        if 10000<salary<50000:
+            self.__salary = salary
+            print("薪资录入成功")
+        else:
+            print("薪资录入失败")
+
+p1 = Employee("Eason",30000)
+print("{0}薪资：{1}".format(p1._Employee__name, p1.get_salary()))  # Eason薪资：30000
+# p1.set_salary(3000) # 薪资录入失败
+p1.set_salary(20000)  # 薪资录入成功
+print("{0}薪资：{1}".format(p1._Employee__name, p1.get_salary()))  # Eason薪资：20000
+~~~
+
+**但是使用@property也可以修改类外部修改私人属性**
+
+【操作】测试
+
+~~~python
+class Employee:
+
+    def __init__(self,name,salary):
+        self.__name = name
+        self.__salary = salary
+
+    @property
+    def salary(self):
+        # print("薪水：{0}".format(self.__salary))
+        return self.__salary
+
+    @salary.setter
+    def salary(self,salary):
+        if 10000<salary<50000:
+            self.__salary = salary
+            print("薪资录入成功")
+        else:
+            print("薪资录入失败")
+
+p1 = Employee("Eason",30000)
+print("{0}薪资：{1}".format(p1._Employee__name, p1._Employee__salary))  # Eason薪资：30000
+p1.salary = -2000  # 薪资录入失败
+p1.salary = 20000  # 薪资录入成功
+print("{0}薪资：{1}".format(p1._Employee__name, p1._Employee__salary))  # Eason薪资：20000
+~~~
+
+### 面向对象的三大特征
+
+面向对象编程的三大特性：继承、封装（隐藏）、多态
+
+- 封装（隐藏）：
+    隐藏对象的属性和实现细节，之对外提供必要的方法。
+    通过使用 “私有属性，私有方法”实现封装。
+- 继承
+    继承可以让子类具有父类的特性，提高代码复用率
+    设计上是一种增量进化，原有父类设计不变的情况下，可以新增新的功能，或者改进
+- 多态
+    指的是同一个方法调用由于对象不同会产生不同的行为。
+
+
+#### 继承
+
+继承是面向对象程序设计的重要特征，也是实现“代码复用”的手段
+
+如果一个新类继承自一个设计好的类，就直接具备了已有类的特征，就大大降低工作难度。称其为“父类或者基类”，新的类称为“子类或派生类”
+
+![image-20210928195247538](./img/image-20210928195247538.png)
+
+Python 支持多重继承，一个子类可以继承多个父类，语法格式：
+
+~~~
+class 子类类名（父类1[,父类2...]）:
+    类体
+~~~
+
+如果在类定义中没有指定父类，则默认父类是 object 类。
+
+object 是所有类的父类，里面定义了一些所有类共有的默认实现。
+
+定义子类时，必须在其构造函数中调用父类的构造函数。格式：
+
+~~~
+父类名.__init__(self,参数列表)：
+~~~
+
+【操作】测试
+
+~~~python
+class Person:
+
+    def __init__(self,name,age):
+        self.name = name
+        self.__age = age  # 私有属性
+
+    def say_hi(self):
+        print("Hello,Bro!!!")
+
+class Children(Person):
+
+    # 子类继承父类的属性
+    def __init__(self,name,age,score):
+        Person.__init__(self,name,age)
+        self.score = score
+
+
+print(
+    Children.mro()
+)  # [<class '__main__.Children'>, <class '__main__.Person'>, <class 'object'>]
+c1 = Children("Jason",23,100)
+c1.say_hi()  # Hello,Bro!!!  继承了父类的属性方法
+
+# 访问私有属性
+# 无法访问通过子类访问父类的私有属性
+print(c1._Person__age)  # 23
+print(dir(c1)) # ...各种实现
+~~~
+
+#### 方法的重写
+
+1. 成员继承：子类继承了父类除构造方法外的所有成员。
+2. 方法重写：子类可以重新定义父类的方法，这样就会覆盖父类的方法，也称为“重写”
+
+【操作】重写测试
+
+~~~python
+class Person:
+
+    def __init__(self,name,age):
+        self.name = name
+        self.__age = age
+
+    def say_hi(self):
+        print("Hello,Bro!!!")
+class Children(Person):
+
+    # 子类继承父类的属性
+    def __init__(self,name,age,score):
+        Person.__init__(self,name,age)
+        self.score = score
+
+    def say_hi(self):
+        print("What's Up?")
+
+s1 = Children("Sue",21,100)
+s1.say_hi()  # What's Up?
+~~~
+
+
+#### object 根类
+
+object 类是所有类的父类，因此所有的类都有 object 类的属性和方法。
+
+**通过 dir() 查看对象所有属性**
+
+~~~python
+print(dir(Person))
+~~~
+
+结果：
+
+~~~
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 'say_hi']
+~~~
+
+**通过 mro() 查看继承结构**
+
+~~~python
+print(Children.mro())
+~~~
+
+结果：
+
+~~~
+[<class '__main__.Children'>, <class '__main__.Person'>, <class 'object'>]
+~~~
+
+要点：
+
+1. dir() 查看属性会显示所有的属性包括我们自己定义的方法
+2. "say_hi" 虽然说是方法，实际上也是属性。
+
