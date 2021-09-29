@@ -16,8 +16,6 @@
 # print(isinstance(s1.name,float))
 # print(isinstance(s1.name,str))
 
-
-
 # class Person:
 #     pass
 
@@ -27,8 +25,6 @@
 # stu01 = Person()
 # # s1 = stu01
 # print(stu01)  # <__main__.Person object at 0x000002B454EC9E08>
-
-
 
 # class Person:
 
@@ -57,9 +53,6 @@
 # print("学校：{0}；学费：{1}".format(Person.school,Person.tuition))
 # print("创建了{0}次实例".format(Person.count))
 
-
-
-
 # class Person:
 
 #     # 类属性
@@ -87,9 +80,6 @@
 # stu1.get_score()
 # Person.addNum(1,2)
 
-
-
-
 # class Person:
 
 #     def __del__(self):
@@ -103,9 +93,6 @@
 # print("over")  # 4. over
 # # print(id(p2))  # name 'p2' is not defined
 
-
-
-
 # class Get_Salary:
 
 #     def __call__(self, salary):
@@ -116,10 +103,6 @@
 #         return dict(年薪=yearSalary,月薪=salary,日薪=daySalary,小时工=hourSalary)
 # p1 = Get_Salary()
 # print(p1(8000))
-
-
-
-
 
 # class Person:
 #     def hello_world(self):
@@ -135,9 +118,6 @@
 # # p1.say("!23")  # say_Hi() takes 1 positional argument but 2 were given
 # Person.say("he")
 
-
-
-
 # class Employee:
 
 #     def __init__(self,name,age):
@@ -147,16 +127,12 @@
 #     def  __work(self):
 #         print("Good Good Work, Day Day Up")
 
-
 # p1 = Employee("Allen",12)
 # print(p1.name)  # Allen
 # # print(p1.age)  # 'Employee' object has no attribute 'age'
 # print(p1._Employee__age)  # 12
 # # p1.__work()  # 'Employee' object has no attribute '__work'
 # p1._Employee__work()  # Good Good Work, Day Day Up
-
-
-
 
 # class Employee:
 
@@ -165,15 +141,11 @@
 #         print("working...")
 #         return 20000
 
-
 # p1 = Employee()  # 1. working...
 # # p1.money()  # 'int' object is not callable
 # # getMoney = p1.money
 # # print(getMoney)  # 2. 20000
 # print(p1.money)  # 3. working...  4. 20000
-
-
-
 
 # class Employee:
 
@@ -197,8 +169,6 @@
 # # p1.set_salary(3000) # 薪资录入失败
 # p1.set_salary(20000)  # 薪资录入成功
 # print("{0}薪资：{1}".format(p1._Employee__name, p1.get_salary()))  # Eason薪资：20000
-
-
 
 # class Employee:
 
@@ -225,9 +195,6 @@
 # p1.salary = 20000  # 薪资录入成功
 # print("{0}薪资：{1}".format(p1._Employee__name, p1._Employee__salary))  # Eason薪资：20000
 
-
-
-
 # class Person:
 
 #     def __init__(self,name,age):
@@ -244,7 +211,6 @@
 #         Person.__init__(self,name,age)
 #         self.score = score
 
-
 # print(
 #     Children.mro()
 # )  # [<class '__main__.Children'>, <class '__main__.Person'>, <class 'object'>]
@@ -256,30 +222,93 @@
 # print(c1._Person__age)  # 23
 # print(dir(c1)) # ...各种实现
 
+# class Person:
+#     def __init__(self, name, age):
+#         self.name = name
+#         self.__age = age
 
+#     def say_hi(self):
+#         print("Hello,Bro!!!")
 
+# class Children(Person):
 
+#     # 子类继承父类的属性
+#     def __init__(self, name, age, score):
+#         Person.__init__(self, name, age)
+#         self.score = score
 
-class Person:
+#     def say_hi(self):
+#         print("What's Up?")
 
-    def __init__(self,name,age):
-        self.name = name
-        self.__age = age
+# s1 = Children("Sue", 21, 100)
+# s1.say_hi()  # What's Up?
 
-    def say_hi(self):
-        print("Hello,Bro!!!")
-class Children(Person):
+# print(dir(Person))
+# print(Children.mro())
 
-    # 子类继承父类的属性
-    def __init__(self,name,age,score):
-        Person.__init__(self,name,age)
-        self.score = score
+# class A:
+#     def aa(self):
+#         print("----AA----")
 
-    def say_hi(self):
-        print("What's Up?")
+#     def say(self):
+#         print("Hello AAA")
 
-s1 = Children("Sue",21,100)
-s1.say_hi()  # What's Up?
+# class B:
+#     def bb(self):
+#         print("----BB----")
 
-print(dir(Person))
-print(Children.mro())
+#     def say(self):
+#         print("Hello BBB")
+
+# # 从左到右执行，A在前所以会先执行A类中的say.
+# class C(A, B):
+#     def cc(self):
+#         print("----CC----")
+
+# p1 = C()
+# p1.cc()
+# print(
+#     C.mro()
+# )  # [<class '__main__.C'>, <class '__main__.A'>, <class '__main__.B'>, <class 'object'>]
+# p1.say()
+
+# class A:
+#     def aa(self):
+#         print(self)
+
+# class B(A):
+#     def bb(self):
+#         # 方法一：直接获取
+#         A.aa(self)  # <__main__.B object at 0x000001D4638F9F88>
+#         # 方法二：super() 获取
+#         super().aa()  # <__main__.B object at 0x000001D4638F9F88>
+#         print(self)  # <__main__.B object at 0x000001D4638F9F88>
+
+# b = B()
+# b.bb()
+
+# class Person:
+#     def say(self):
+#         print("你说话啊，你")
+
+# class Chinese(Person):
+#     def say(self):
+#         print("中文....")
+
+# class Japanese(Person):
+#     def say(self):
+#         print("日语....")
+
+# class Amercian(Person):
+#     def say(self):
+#         print("英语....")
+
+# def people(x):
+#     if isinstance(x, Person):
+#         x.say()
+#     else:
+#         print("请说人话")
+
+# people(Chinese())
+# people(Japanese())
+# people(Amercian())

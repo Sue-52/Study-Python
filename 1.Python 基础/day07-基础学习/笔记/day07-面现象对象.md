@@ -560,7 +560,7 @@ print("{0}薪资：{1}".format(p1._Employee__name, p1._Employee__salary))  # Eas
     指的是同一个方法调用由于对象不同会产生不同的行为。
 
 
-#### 继承
+#### 继承（重点）
 
 继承是面向对象程序设计的重要特征，也是实现“代码复用”的手段
 
@@ -680,4 +680,175 @@ print(Children.mro())
 
 1. dir() 查看属性会显示所有的属性包括我们自己定义的方法
 2. "say_hi" 虽然说是方法，实际上也是属性。
+
+#### 多重继承
+
+Python 支持多重继承，一个子类可以有多个“直接父类”。这样就具备了多个父类的特点。但是这样类的整体层次会变得复杂，尽量避免
+
+【操作】测试多重父类
+
+~~~python
+class A:
+    def aa(self):
+        print("----AA----")
+
+
+class B:
+    def bb(self):
+        print("----BB----")
+
+
+class C(A, B):
+    def cc(self):
+        print("----CC----")
+
+
+p1 = C()    
+~~~
+
+![image-20210929160940977](./img/image-20210929160940977.png)
+
+#### mro() 函数
+
+Python 支持多继承，如果父类中有相同名字的方法，在子类没有指定父类名时，解释器将“从左向右”按顺序搜索
+
+> MRO（Method Resolution Order）：方法解析顺序。通过 mro() 方法获取“类的层次结构”，也按照这个类的层次结构查找。
+
+~~~python
+class A:
+    def aa(self):
+        print("----AA----")
+
+    def say(self):
+        print("Hello AAA")
+
+
+class B:
+    def bb(self):
+        print("----BB----")
+
+    def say(self):
+        print("Hello BBB")
+
+
+# 从左到右执行，A在前所以会先执行A类中的say.
+class C(A, B):
+    def cc(self):
+        print("----CC----")
+
+
+p1 = C()
+p1.cc()
+p1.say()
+~~~
+
+【操作】mro() 函数输出的类的层次结构
+
+~~~python
+print(
+    C.mro()
+)  # [<class '__main__.C'>, <class '__main__.A'>, <class '__main__.B'>, <class 'object'>]
+~~~
+
+#### Super() 函数获取父类定义
+
+在子类中，获取父类的方法时，可以通过 super() 
+super() 代表父类的定义，不是父类对象
+
+~~~python
+class A:
+    def aa(self):
+        print(self)
+
+class B(A):
+    def bb(self):
+        # 方法一：直接获取
+        A.aa(self)  # <__main__.B object at 0x000001D4638F9F88>
+        # 方法二：super() 获取
+        super().aa()  # <__main__.B object at 0x000001D4638F9F88>
+        print(self)  # <__main__.B object at 0x000001D4638F9F88>
+
+b = B()
+b.bb()
+~~~
+
+#### 多态（重点）
+
+多态（Polymorphism）是指同一个方法调用由于对象不同能产生不同的行为。
+
+要点：
+
+1. 多态时方法的多态，属性没有多态
+2. 多态的存在有 2 个必要条件：**继承**、**方法重写**
+
+【操作】测试方法多态
+
+~~~python
+class Person:
+    def say(self):
+        print("你说话啊，你")
+
+class Chinese(Person):
+    def say(self):
+        print("中文....")
+
+class Japanese(Person):
+    def say(self):
+        print("日语....")
+
+class Amercian(Person):
+    def say(self):
+        print("英语....")
+
+def people(x):
+    if isinstance(x, Person):
+        x.say()
+    else:
+        print("请说人话")
+
+people(Chinese())
+people(Japanese())
+people(Amercian())
+~~~
+
+**isinstance() 函数来判断一个对象是否是一个已知的类型**
+
+sinstance() 与 type() 区别：
+
+- type() 不会认为子类是一种父类类型，不考虑继承关系。
+- isinstance() 会认为子类是一种父类类型，考虑继承关系。
+
+如果要判断两个类型是否相同推荐使用 isinstance()。
+
+#### 特殊方法
+
+常见的特殊方法：
+
+![image-20210929164355142](./img/image-20210929164355142.png)
+
+![image-20210929164415158](./img/image-20210929164415158.png)
+
+每个运算符也是对应的方法：
+
+![image-20210929164455986](./img/image-20210929164455986.png)
+
+#### 特殊属性
+
+Python 对象中包含了很多双下划线开始和结束的属性，这些都是特殊属性，有特殊用法。
+
+![image-20210929165321335](./img/image-20210929165321335.png)
+
+
+### 设计模式
+
+设计模式是面向对象语言特有的内容，是我们在面临某一类问题时固定的做法，设计模式有很多种。
+
+常用的两个模式：
+
+- 工厂模式
+- 单列模式
+
+工厂模式实现了创建者和调用者的分离，使用专门的工厂类将先择实现类、创建对象进行统一管理
+
+#### 工厂设计模式
 
