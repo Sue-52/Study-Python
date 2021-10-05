@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "d:\00.study\Study-Python\02.Python ½ø½×\day01 - Python½ø½×\code\01.error.py", line 76, in <module>
+    num = 3 / 0
+ZeroDivisionError: division by zero

@@ -423,4 +423,74 @@ tb:  <traceback object at 0x000001563EEC7F08>
 
 ### trackback 模块使用
 
+【示例】使用 Traceback 输出异常信息
 
+~~~python
+import traceback
+try:
+    print("first step")
+    num = 3 / 0
+except:
+    traceback.print_exc()
+~~~
+
+结果：
+
+~~~
+first step
+Traceback (most recent call last):
+  File "d:\00.study\Study-Python\02.Python 进阶\day01 - Python进阶\code\01.error.py", line 67, in <module>
+    num = 3 / 0
+ZeroDivisionError: division by zero
+~~~
+
+**用于想控制台那样输出整体的报错信息，但是执行进程并不会中断**
+
+【操作】使用 taceback 将异常信息写入到指定文件
+
+~~~python
+import traceback
+try:
+    print("first step")
+    num = 3 / 0
+except:
+    with open(
+            "d:/00.study/Study-Python/02.Python 进阶/day01 - Python进阶/code/errorMsg.txt",
+            "a") as f:
+        traceback.print_exc(file=f)
+~~~
+
+> 在进行写入的时候会自行创建出指定文件并写入
+
+### 自定义异常类
+
+程序开发中，需要我们自定义异常类。自定义异常类一般都是运行时异常，通常继承 Exception 或其子类即可。命名一般以 Error、Exception为后缀。
+
+自定义异常由 raise 语句主动抛出。
+
+【操作】测试
+
+~~~python
+# 自定义异常类
+class LongNameException(Exception):
+    def __init__(self, len):
+        self.len = len
+
+    def __str__(self):
+        if (self.len < 2):
+            print("姓名长度为：{0}。长度过短".format(self.len))
+        elif (self.len > 5):
+            print("姓名长度为：{0}。长度过长".format(self.len))
+
+def get_name():
+    name = input("请输入姓名：")
+    print(type(len(name)))
+    if len(name) < 2:
+        raise LongNameException(len(name))
+    elif len(name) > 5:
+        raise LongNameException(len(name))
+    else:
+        print(name)
+
+get_name()
+~~~
