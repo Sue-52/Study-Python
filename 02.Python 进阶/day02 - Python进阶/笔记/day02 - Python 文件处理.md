@@ -426,4 +426,313 @@ os.startfile(r"D:/WeChat/WeChat.exe")
 
 如果需要对文件和目录做其他操作，可以使用 `os` 和 `os.path` 模块
 
-os 模块的常用文件操作：
+**os 模块的常用文件操作：**
+
+| 方法名 | 描述 |
+|--------|-----|
+| remove(path) | 删除指定的文件 |
+| rename(src,dest) | 重命名文件或目录 |
+| stat(path) | 返回文件的所有属性 |
+| listdir(path) | 返回 path 目录下的文件和目录列表 |
+
+使用：
+
+~~~python
+os.rename("./cat.gif", "rename_cat.gif")
+~~~
+
+![os.rename方法](./img/rename.gif)
+
+~~~python
+os.remove("./file1.txt")
+~~~
+
+![os.remove方法展示](./img/remove.gif)
+
+~~~python
+file_pro = os.stat("file.txt")
+print(file_pro)  
+# os.stat_result(st_mode=33206, st_ino=3659174697668209, st_dev=1986293374, st_nlink=1, st_uid=0, st_gid=0, st_size=43, st_atime=1633682811, st_mtime=1633607574, st_ctime=1633508935)
+~~~
+
+~~~python
+file_list = os.listdir("D:/00.study/")
+print(file_list)
+# ['Basic-Study', 'Full-Stack-Study', 'hooks-app', 'Study-C And C++', 'Study-Deep-JavaScript', 'Study-JavaScript-Deeper', 'Study-Python', 'vue-manage-system-master', '作业', '复习文档']
+print(os.name)  # nt --> windows; linux&unix -->posix
+~~~
+
+**os 模块下关于目录操作的相关方法：**
+
+| 方法名 | 描述 |
+|-------|------|
+| mkdir(path) | 创建目录 |
+| makedirs(path1/path2/...) | 创建多级目录 |
+| rmdir(path) | 删除目录 |
+| removedirs(path1/path2/...) | 删除多级目录 |
+| getcwd() | 返回当前工作目录：current work dir |
+| chdir(path) | 把 path 设为当前工作目录 |
+| walk() | 遍历目录树 |
+| sep | 当前操作系统所使用的路径分隔符 |
+
+使用：
+
+~~~python
+os.mkdir("works")
+~~~
+
+![os.mkdir使用操作](./img\mkdir.gif)
+
+~~~python
+os.makedirs("works/jobs/stu")
+~~~
+
+![os.makedirs使用](./img/makedirs.gif)
+
+~~~python
+os.rmdir("works")
+~~~
+
+![os.rmdir使用](./img/rmdir.gif)
+
+~~~python
+os.removedirs("works/jobs/stu")
+~~~
+
+![os.removedirs使用](./img/removedirs.gif)
+
+~~~python
+os.getcwd()
+os.chdir("xxx")
+os.walk()
+~~~
+
+#### os.path 模块 - 目录操作
+
+os.path 模块提供了目录相关(路径判断、路径切分、路径链接、文件夹遍历)的操作
+
+| 方法 | 描述 |
+|-----|------|
+| isabs(path) | 判断 path 是否为绝对路径 |
+| isdir(path) | 判断 path 是否为目录 |
+| sifile(path) | 判断 path 是否为文件 |
+| exists(path) | 判断指定路径的文件是否存在 |
+| getsize(filename) | 返回文件大小 |
+| abspath(path) | 返回绝对路径 |
+| dirname(path) | 返回目录的路径 |
+| getatime(filename) | 返回文件的最后访问时间 |
+| getmtime(filename) | 返回文件的最后修改时间 |
+| walk(top,func,arg) | 递归方法遍历目录 |
+| join(path,*paths) | 连接多个 path |
+| split(path) | 对路径进行分割，以列表形式返回 |
+| splitext(path) | 从路径中分割文件的扩展名 |
+
+~~~python
+print(os.path.isabs("file.txt"))  # False
+print(os.path.isdir("file.txt"))  # False
+print(os.path.isfile("file.txt"))  # True
+print(os.path.exists("file.txt"))  # True
+print(os.path.getsize("file.txt"))  # 43
+print(os.path.abspath("file.txt"))
+# D:\00.study\Study-Python\02.Python 进阶\day02 - Python进阶\code\file.txt
+print(os.path.dirname(__file__))
+# d:\00.study\Study-Python\02.Python 进阶\day02 - Python进阶\code
+print(os.path.getatime("file.txt"))  # 1633682811.951791
+print(os.path.getmtime("file.txt"))  # 1633607574.351463
+# print(os.path.join())
+print(os.path.split("file.txt"))  # ('', 'file.txt')
+print(os.path.splitext("file.txt"))  # ('file', '.txt')
+~~~
+
+#### walk() 递归遍历所有文件
+
+os.walk() 方法：
+
+返回一个 3 个元素的元组。（dirpath，dirnames、filenames）：
+
+- dirpath：列出指定目录的路径
+- dirnames：目录喜爱的所有文件夹
+- filenames：目录下的所有文件
+
+用于通过在目录树中游走输出在目录中的文件名，向上或者向下。
+一个简单易用的文件、目录遍历器，可以帮助我们高效的处理文件、目录方面的事情。
+
+walk()方法语法格式如下：
+
+~~~python
+os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])
+~~~
+
+**参数:**
+
+- **top** -- 是你所要遍历的目录的地址, 返回的是一个三元组(root,dirs,files)。
+  - **root** 所指的是当前正在遍历的这个文件夹的本身的地址
+  - **dirs** 是一个 list ，内容是该文件夹中所有的目录的名字(不包括子目录)
+  - files 同样是 list , 内容是该文件夹中所有的文件(不包括子目录)
+- **topdown** --可选，为 True，则优先遍历 top 目录，否则优先遍历 top 的子目录(默认为开启)。如果 topdown 参数为 True，walk 会遍历top文件夹，与top 文件夹中每一个子目录。
+- **onerror**-- 可选，需要一个 callable 对象，当 walk 需要异常时，会调用。
+- **followlinks** -- 可选，如果为 True，则会遍历目录下的快捷方式(linux 下是软连接 symbolic link )实际所指的目录(默认关闭)，如果为 False，则优先遍历 top 的子目录。
+
+使用：
+
+~~~python
+# os.makedirs("works/some/www")
+path = os.getcwd()
+# print(path)
+file_lists = os.walk(path)
+# print(list(file_lists))
+for dirpaths, dirnames, filenames in file_lists:
+    # print(dirpaths)
+    # print(dirnames)
+    # print(filenames)
+    for dirP in dirnames:
+        # print(dirP)
+        print(os.path.join(dirpaths, dirP))
+
+    for names in filenames:
+        print(os.path.join(dirpaths, names))
+~~~
+
+#### shutil 模块（拷贝和压缩）
+
+shutil 模块是 python 标准库中提供的，主要又来做文件和文件夹的拷贝
+移动、删除等；还可以做文件和文件夹的压缩、解压缩操作。
+
+os 模块提供了对目录或文件的一般操作，shutil模块作为补充，提供了移动、复制、压缩、解压等操作
+
+| 方法 | 描述 |
+|-----|------|
+| copyfileobj(src, dst) | 循环读取old.txt文件内容并写入到new.txt文件当中 |
+| shutil.copyfile(src, dct) | 从源src复制到dst中去。当然前提是目标地址是具备可写权限。抛出的异常信息为IOException. 如果当前的dst已存在的话就会被覆盖掉 |
+| shutil.copymode(src, dst) | 只是会复制其权限其他的东西是不会被复制的 |
+| shutil.copystat(src, dst) | 复制权限、最后访问时间、最后修改时间 |
+| shutil.copy( src, dst) | 复制一个文件到一个文件或一个目录 |
+| shutil.copy2( src, dst) | 在copy上的基础上再复制文件最后访问时间与修改时间也复制过来了，类似于cp –p的东西 |
+| shutil.copy2( src, dst) | 如果两个位置的文件系统是一样的话相当于是rename操作，只是改名；如果是不在相同的文件系统的话就是做move操作 |
+| shutil.copytree( olddir, newdir, True/Flase) | 把olddir拷贝一份newdir，如果第3个参数是True，则复制目录时将保持文件夹下的符号连接，如果第3个参数是False，则将在复制的目录下生成物理副本来替代符号连接 |
+| shutil.rmtree( src ) | 递归删除一个目录以及目录内的所有内容 |
+| shutil.ignore_patterns(*patterns) | 忽略哪个文件，有选择性的拷贝 |
+| shutil.make_archive(base_name, format[, root_dir[, base_dir[, verbose[, dry_run[, owner[, group[, logger]]]]]]]) | 创建压缩包并返回文件路径，例如：zip、tar |
+
+使用：
+
+**shutil.copyfileobj(src, dst)：**
+
+~~~python
+shutil.copyfileobj(open("old.txt", "r"), open("new.txt", "w"))
+os.system("cat old.txt new.txt")
+~~~
+
+![](./img/copyfileobj.gif)
+
+> 须以 open("xxxx","x") 的方式打开文件后写入，否则报错
+> copyfileobj方法只会拷贝文件内容
+
+**shutil.copyfile(src, dct)：**
+
+~~~python
+shutil.copyfile("old.txt", "new1.txt")
+os.system("cat old.txt new.txt")
+~~~
+
+> 从源src复制到dst中去。当然前提是目标地址是具备可写权限。抛出的异常信息为IOException. 如果当前的dst已存在的话就会被覆盖掉
+> 如果有文件则会覆盖文件中的内容，没有则创建
+
+**shutil.copymode(src, dst, *, follow_symlinks=True)：**
+
+~~~python
+shutil.copymode("old.txt", "new1.txt")
+~~~
+
+> 仅拷贝文件权限，文件的内容、组、用户均不变
+
+**shutil.copystat(src, dst, *, follow_symlinks=True)：**
+
+~~~python
+shutil.copystat("old.txt", "new1.txt")
+os.system("stat old.txt new.txt")
+~~~
+
+> 拷贝文件状态的信息，文件必须存在，不copy改动时间
+
+![copymode - copystat](./img/copymode-copystat.gif)
+
+**shutil.copy(src, dst, *, follow_symlinks=True)：**
+
+~~~python
+shutil.copy("old.txt", "new2.txt")
+os.system("stat old.txt new2.txt")
+~~~
+
+> 拷贝文件和状态信息，同样不copy改动时间
+
+**shutil.copy2(src,dct)：**
+
+~~~python
+shutil.copy("old.txt", "new2.txt")
+os.system("stat old.txt new2.txt")
+~~~
+
+> 拷贝文件和状态信息
+
+![copy - copy2](./img/copy-copy2.gif)
+
+**shutil.copytree(src, dst, symlinks=False, ignore=None)：**
+
+~~~python
+os.system("tree works")
+shutil.copytree(
+    "works",
+    "works2",
+    symlinks=True,
+)
+os.system("tree works2")
+~~~
+
+> 递归的去拷贝文件夹
+> works2目录必须不存在，symlinks=True只copy链接文件，如果等于False就copy源文件，ignore等于不copy的文件或者目录
+
+![copytree](./img/copytree.gif)
+
+**shutil.rmtree(path, ignore_errors=False, onerror=None)：**
+
+~~~python
+os.system("ls -d works2")
+shutil.rmtree("works2")
+os.system("ls -d works2")  # ls: works2: No such file or directory
+~~~
+
+![rmtree](./img/rmtree.gif)
+
+**shutil.move(src, dst, copy_function=copy2)：**
+
+~~~python
+os.system("ls -ld works")
+# drwxr-xr-x 3 SUe Administrators 0 Oct  8 17:59 works
+
+shutil.move("works", "works2")
+
+os.system("ls -ld works")
+# ls: works: No such file or directory
+
+os.system("ls -ld works2")
+# drwxr-xr-x 3 SUe Administrators 0 Oct  8 17:59 works2
+~~~
+
+> 递归的去移动文件，它类似mv命令，其实就是重命名
+
+![move](./img/move.gif)
+
+**shutil.make_archive(base_name, format[, root_dir[, base_dir[, verbose[, dry_run[, owner[, group[, logger]]]]]]])：**
+
+> base_name： 压缩包的文件名，也可以是压缩包的路径。只是文件名时，则保存至当前目录，否则保存至指定路径， 如：   tar_name  =>保存至当前路径 如：/Users/a6/tar_name =>保存至/Users/a6/
+> format： 压缩包种类，“zip”, “tar”, “bztar”，“gztar”
+> root_dir： 要压缩的文件夹路径（默认当前目录）
+> owner： 用户，默认当前用户
+> group： 组，默认当前组
+> logger： 用于记录日志，通常是logging.Logger对象
+
+#### zipFile 模块（解压缩）
+
+`zipfile`是 python 里用来做zip格式编码的压缩和解压缩的，由于是很常见的zip格式，所以这个模块使用频率也是比较高的。
+
