@@ -290,3 +290,140 @@ print(f.read())
 # sue，---1
 # Jason，
 ~~~
+
+### pickle 序列化
+
+Python中，对象的本质就是一个 “存储数据内存块” 。当我们需要把内存块中的数据保存到硬盘，或通过网络传输到其他电脑上时。我们就需要“对象的序列化和反序列化”。序列化机制管饭的应用在分布式、并行系统上。
+
+可以实现内存中的对象与方便持久化在磁盘中或在网络中进行交互的数据格式（str、bites)之间的相互转换。这种机制就叫序列化与发序列化
+
+序列化：将内存中的不可持久化和传输对象转换为可方便持久化和传输对象的过程。
+
+反序列化：将可持久化和传输对象转换为不可持久化和传输对象的过程。
+
+pickle模块的dumps()、dump()、loads()、load()是个函数按功能划分可以分为两组：
+**序列化：dumps()、dump()**
+**反序列化：loads()、load()**
+
+语法格式：
+
+~~~python
+pickle.dump(obj,file)  # obj就是要被序列化的对象，file指的是存储文件
+pickle.load(file) # 从 file 读取数据，反序列化成对象。
+~~~
+
+【操作】将对象序列化到文件中
+
+~~~python
+import pickle
+with open(r"file.txt", "wb") as f:
+    name = "Dantes"
+    age = 18
+    arr = [1, 2, 3, 4, 5, 6, 7]
+
+    pickle.dump(name, f)
+    pickle.dump(age, f)
+    pickle.dump(arr, f)
+~~~
+
+【操作】将获得到的数据反序列化
+
+~~~python
+with open(r"file.txt", "rb") as f:
+    a1 = pickle.load(f)
+    a2 = pickle.load(f)
+    a3 = pickle.load(f)
+    print(a1) # Dantes
+    print(a2) # 18
+    print(a3) # [1, 2, 3, 4, 5, 6, 7]
+~~~
+
+### CSV 文件操作
+
+`CSV（Cooma Separated Values）` 是逗号分隔符文本格式，常用于数据交换、Excel文件和数据库数据的导入和导出。与 Excel 文件不同，在 CSV 文件中：
+
+- 值没有类型，所有值都是字符串
+- 不能指定字体颜色和样式
+- 不能指定单元格的宽高，不能合并单元格
+- 没有多个工作表
+- 不能嵌入图像图表
+
+Excel 表格中建立的表格为：
+
+![image-20211007200230942](./img/image-20211007200230942.png)
+
+另存为“csv”格式的，打开后的内容为以下：
+
+![image-20211007200251137](./img/image-20211007200251137.png)
+
+#### CSV 文件的读取和写入
+
+1. `CSV` 文件的读取
+
+在使用前记得需要引入 csv 包
+
+~~~python
+import csv
+with open(r"xxx.csv", "r") as f:
+    after_read = csv.reader(f)
+    # print(after_read)  # <_csv.reader object at 0x000001B7C5F1DAC8>
+    print(list(after_read))
+~~~
+
+通过 csv.reader() 函数建立一个读入数据的对象
+
+2. `CSV` 文件的写入
+
+~~~python
+a1 = [5, "jj", 21, "doctor"]
+a2 = [6, "gg", 25, "runner"]
+a3 = [7, "kk", 31, "player"]
+
+with open(r"xxx.csv", "w") as f:
+    write_csv = csv.writer(f)
+    write_csv.writerow(a1)
+    write_csv.writerow(a2)
+    write_csv.writerow(a3)
+~~~
+
+### OS 模块
+
+OS 模块可以让我们直接对操作系统进行控制。直接调用操作系统的可执行文件、命令，操作文件、目录等。是系统运维的核心基础
+
+#### OS 调用操作系统文件和命令
+
+- `os.system` system函数可以将字符串转化成命令在服务器上运行；其原理是每一条system函数执行时，其会创建一个子进程在系统上执行命令行，子进程的执行结果无法影响主进程；
+
+【操作】打开记事本
+
+~~~python
+import os
+os.system("notepad.exe")
+~~~
+
+【操作】调用系统的 ping 命令
+
+~~~python
+os.system("ping www.google.com")
+# Pinging www.google.com [157.240.12.35] with 32 bytes of data:
+# Request timed out. ...
+~~~
+
+【操作】打开 cmd 和 powershell
+
+~~~python
+os.system("cmd")
+os.system("powershell")
+~~~
+
+- `os.startfile` 可以根据文件的根目录代开该文件
+
+~~~python
+os.startfile(r"D:/WeChat/WeChat.exe")
+~~~
+
+#### OS 模块 - 文件和目录操作
+
+如果需要对文件和目录做其他操作，可以使用 `os` 和 `os.path` 模块
+
+os 模块的常用文件操作：
