@@ -736,3 +736,232 @@ os.system("ls -ld works2")
 
 `zipfile`是 python 里用来做zip格式编码的压缩和解压缩的，由于是很常见的zip格式，所以这个模块使用频率也是比较高的。
 
+常用方法：
+
+| 方法 | 描述 |
+|------|-----|
+| is_zipfile(文件) | 测试filename的文件，看它是否是个有效的zipfile |
+| ZipFile(filename[,mode[,compression[,allowZip64]]]) | - filename：文件对象<br />- mode：可选r、w、a代表不同文件的的开放式；r只读；w重写；a添加<br />- compression：指出这个zipfile用什么压缩方法，默认为：ZIP_STORED,另一种选择是：ZIP_DEFLATED<br />- allowZip64：是个 bool 型变量，当设置为 True 时就是说可以用来出创建大小大于2G的zip文件，默认为：True |
+| close() | 关闭zip文件，结束后必须写 |
+| extract(member,path=None,pwd=None) | 从 zip 中提取一个文件 |
+| extractall(path[,pwd]) | 将文件按照 namelist 中的目录结构从当前 zip 中提取出来并放到指定目录下；这两个extract的path若不存在都会自动创建出来的，且这个path必须是个目录，解压时一定是把一个文件，包含其相对zip包路径的所有目录一起解压出来。 |
+| namelist() | 返回一个列表，内容是zip文件中所有子文件的path（相对于zip文件包而言的）。相当于是一个保存了zip内部目录结构的列表 |
+| infolist() | 回一个列表，内容是每个zip文件中子文件的ZipInfo对象，这个对象有上文中提到的那些字段 |
+| printdir() | 将zip文件的目录结构打印到stdout上，包括每个文件的path，修改时间和大小 |
+| open(name[,mode[,pwd]]) | 获取一个子文件的文件对象，可以将其用来read,readline,write等等操作 |
+| setpassword(psw) | 设置zip文件的密码 |
+| testzip() | 读取zip中的所有文件，验证他们的CRC校验和。返回第一个损坏文件的名称，如果所有文件都是完整的就返回None |
+| write(filename[,arcname[,compression_type]]) | 将zip外的文件filename写入到名为arcname的子文件中（当然arcname也是带有相对zip包的路径的），compression_type指定了压缩格式，也是ZIP_STORED或ZIP_DEFLATED。z的打开方式一定要是w或者a才能顺利写入文件 |
+
+操作使用：
+
+~~~python
+# zipFile 模块的使用
+import zipfile
+
+# 1. is_zipfile 检查文件是否是一个 zip 文件
+print(zipfile.is_zipfile("works2.zip"))  # True
+print(zipfile.is_zipfile("works2"))  # False
+
+# 2. ZipFile(filename[,mode[,compression[,allowZip64]]])
+print(zipfile.ZipFile("works2.zip", "r"))
+# <zipfile.ZipFile filename='works2.zip' mode='r'>
+
+# 3. close() 关闭文件，结束时必须要有
+z = zipfile.ZipFile("works2.zip", "r")
+z.close()
+print(z)  # <zipfile.ZipFile [closed]>
+
+# 4. extract(member,path=None,pwd=None) 从 zip 中提取一个文件
+print(z.extract("works2/s.txt", path=None, pwd=None))
+
+# 5. extractall(path[,pwd]) 将文件按照 namelist 中的目录结构从当前 zip 中提取出来并放到指定目录下
+z.extractall("works2")
+z.close()
+
+# 6. namelist() 返回一个列表，内容是 zip 文件中所有子文件的path
+print(z.namelist())  # ['works2/', 'works2/some/', 'works2/some/www/']
+z.close()
+
+# 7. infolist() 返回一个列表，内容是每个 zip 文件中子文件的 ZipInfo 对象
+print(z.infolist())
+# [<ZipInfo filename='works2/' external_attr=0x10>, <ZipInfo filename='works2/some/' external_attr=0x10>, <ZipInfo filename='works2/some/www/' external_attr=0x10>]
+z.close()
+
+# 8. printdir() 将 zip 文件的目录结构打印到 stdout 上，包括了 path，修改时间和大小
+print(z.printdir())
+# File Name                                             Modified             Size
+# works2/                                        2021-10-08 17:59:50            0
+# works2/some/                                   2021-10-08 17:59:50            0
+# works2/some/www/                               2021-10-08 17:59:50            0
+z.close()
+
+9. open(name[,mode[,pwd]]),获取一个子文件的文件对象，可以将其用来read、readline、write等操作
+
+# 10. setpassword(psw)，设置zip文件的密码
+z.setpassword(123456)
+
+# 11. testzip() 读取 zip 中所有文件
+a = z.testzip()
+print(a is None)
+
+# 12. write(filename[,arcname[,compression_type]]) 将其与文件写入 zip 中
+z = zipfile.ZipFile("works2.zip", "w")
+z.write("files.py")
+z.write("os.py")
+z.write("shutil.py")
+z.close()
+~~~
+
+**一些使用方法：**
+
+1. 解压文件并读取
+
+~~~python
+import zipfile
+
+z = zipfile.ZipFile(filename, 'r') # 这里的第二个参数用r表示是读取zip文件，w是创建一个zip文件
+
+for f in z.namelist():
+    print(f)
+~~~
+
+2. 压缩进文件写入
+
+~~~python
+import zipfile, os
+
+z = zipfile.ZipFile(filename, 'w') # 注意这里的第二个参数是w，这里的filename是压缩包的名字
+
+#假设要把一个叫testdir中的文件全部添加到压缩包里（这里只添加一级子目录中的文件）：
+if os.path.isdir(testdir):
+    for d in os.listdir(testdir):
+        z.write(testdir+os.sep+d)#os.sep是文件分隔符"//"
+# close() 是必须调用的！
+z.close()
+~~~
+
+**一键压缩功能：**
+
+~~~python
+# 导入压缩所需要的包
+import zipfile
+# 导入 os 模块
+import os
+# 导入 os.path 模块
+import os.path
+
+
+# 1. 创建类
+class ZFile(object):
+    # 2. 初始化数据 filename-文件名；mode-方式；basedir-绝对路径
+    def __init__(self, filename, mode="r", basedir=""):
+        self.filename = filename
+        self.mode = mode
+        # 如果写入的方式为 w-写入，a-追加
+        if self.mode in ("w", "a"):
+            # 读取zip文件并设置
+            self.zfile = zipfile.ZipFile(filename,
+                                         self.mode,
+                                         compression=zipfile.ZIP_DEFLATED)
+        else:
+            # 如果没有，默认
+            self.zfile = zipfile.ZipFile(filename, self.mode)
+        # 绝对路径
+        self.basedir = basedir
+        # 如果没写，则使用os.path.dirname自动补全
+        if not self.basedir:
+            self.basedir = os.path.dirname(filename)
+
+    # 添加单个文件
+    def addfile(self, path, arcname=None):
+        # 路径移除 // , /
+        path = path.replace("//", "/")
+        #
+        if not arcname:
+            if path.startswith(self.basedir):
+                arcname = path[len(self.basedir):]
+            else:
+                arcname = ''
+        self.zfile.write(path, arcname)
+
+    # 是否添加多个文件
+    def addfiles(self, paths):
+        for path in paths:
+            if isinstance(path, tuple):
+                self.addfile(*path)
+            else:
+                self.addfile(path)
+
+    # 关闭
+    def close(self):
+        self.zfile.close()
+
+    def extract_to(self, path):
+        for p in self.zfile.namelist():
+            self.extract(p, path)
+
+    def extract(self, filename, path):
+        if not filename.endswith("/"):
+            f = os.path.join(path, filename)
+            dir = os.path.dirname(f)
+            if not os.path.exists(dir):
+                os.makedirs(dir)
+            self.zfile(f, "wb").write(self.zfile.read(filename))
+
+
+def create(zfile, files):
+    z = ZFile(zfile, 'w')
+    z.addfiles(files)
+    z.close()
+
+
+def extract(zfile, path):
+    z = ZFile(zfile)
+    z.extract_to(path)
+    z.close()
+~~~
+
+### 递归算法原理
+
+递归，是一种常见的解决问题的方法，即把问题逐渐简单化。
+
+其思想就是 “自己调用自己” 一个使用递归技术的方法会直接或间接的调用自己。
+
+**递归结构分为两部分：**
+
+- **定义递归头：**没有头则会进入死循环，这也是递归的结束条件
+- **递归体：**调用自身的方法
+
+【操作】求 n!
+
+~~~python
+def factorial(n):
+    if n == 1:
+        return n
+    else:
+        return n * factorial(n - 1)
+
+
+print(factorial(10))    
+~~~
+
+【操作】输出目录树
+
+~~~python
+import os
+
+allFiles = []
+
+def get_all_files(path, level):
+    childFiles = os.listdir(path)
+    for file in childFiles:
+        filepath = os.path.join(path, file)
+        if os.path.isdir(filepath):
+            get_all_files(filepath, level + 1)
+        allFiles.append("\t" * level + filepath)
+
+get_all_files("works2", 0)
+for f in reversed(allFiles):
+    print(f)
+~~~
