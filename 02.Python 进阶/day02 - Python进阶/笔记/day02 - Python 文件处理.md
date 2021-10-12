@@ -386,7 +386,7 @@ with open(r"xxx.csv", "w") as f:
     write_csv.writerow(a3)
 ~~~
 
-### OS 模块
+### OS 模块(⭐)
 
 OS 模块可以让我们直接对操作系统进行控制。直接调用操作系统的可执行文件、命令，操作文件、目录等。是系统运维的核心基础
 
@@ -965,3 +965,4 @@ get_all_files("works2", 0)
 for f in reversed(allFiles):
     print(f)
 ~~~
+
