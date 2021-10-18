@@ -549,4 +549,4 @@ Local --> Enclosed --> Global --> Built in
 
 最后都没找到就会生成一个 NameError
 
-    
+​    
