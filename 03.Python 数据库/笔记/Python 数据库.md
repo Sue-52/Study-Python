@@ -940,3 +940,244 @@ SELECT语句中使用时必须遵循的次序，列出迄今为止所学过的�
 
 ### 第十二章： 子查询
 
+**版本要求**: MySQL 4.1引入了对子查询的支持，所以要想使用本章描述的SQL，必须使用MySQL 4.1或更高级的版本。
+
+**查询（query）**: 任何SQL语句都是查询。但此术语一般指SELECT语句。
+
+SQL还允许创建子查询（subquery），即嵌套在其他查询中的查询。
+
+#### 利用子查询进行过滤
+
+订单存储在两个表中。对于包含订单号、客户ID、订单日期的每个订单，orders表存储一行。各订单的物品存储在相关的orderitems表中。orders表不存储客户信息。它只存储客户的ID。实际的客户信息存储在customers表中。
+
+假如需要列出订购物品TNT2的所有客户，如何检索呢
+
+步骤如下：
+
+(1) 检索包含物品TNT2的所有订单的编号。
+(2) 检索具有前一步骤列出的订单编号的所有客户的ID。
+(3) 检索前一步骤返回的所有客户ID的客户信息。
+
+将3个查询语句合成一个。
+
+第一条SELECT语句的含义很明确，对于prod_id为TNT2的所有订单物品，它检索其order_num列。
+
+~~~mysql
+SELECT order_num FROM orderitems WHERE prod_id = 'TNT2';
+~~~
+
+![image-20211020171919188](./img/image-20211020171919188.png)
+
+下一步，查询具有订单20005和20007的客户ID。使用 IN 子句
+
+~~~mysql
+SELECT cust_id FROM orders WHERE order_num IN (20005,20007);
+~~~
+
+![image-20211020171939863](./img/image-20211020171939863.png)
+
+现在，把第一个查询（返回订单号的那一个）变为子查询组合两个查询。
+
+~~~mysql
+SELECT cust_id FROM orders WHERE order_num IN (
+	SELECT order_num FROM orderitems WHERE prod_id = "TNT2"
+);
+~~~
+
+![image-20211020172358601](./img/image-20211020172358601.png)
+
+首先，它执行下面的查询：
+
+~~~mysql
+SELECT order_num FROM orderitems WHERE prod_id = 'TNT2';
+~~~
+
+此查询返回两个订单号：20005和20007。
+然后，这两个值以IN操作符要求的逗号分隔的格式传递给外部查询的WHERE子句。外部查询变成：
+
+~~~mysql
+SELECT cust_id FROM orders WHERE order_num IN (20005,20007);
+~~~
+
+可以看到，输出是正确的并且与前面硬编码WHERE子句所返回的值相同。
+
+> **格式化SQL**: 包含子查询的SELECT语句难以阅读和调试，特别是它们较为复杂时更是如此。如上所示把子查询分解为多行并且适当地进行缩进，能极大地简化子查询的使用。
+
+现在得到了订购物品TNT2的所有客户的ID。下一步是检索这些客户ID的客户信息。
+
+分解法：
+
+~~~mysql
+SELECT order_num FROM orderitems WHERE prod_id ="TNT2";
+SELECT cust_id FROM orders WHERE order_num IN (20005,20007);
+SELECT cust_name,cust_contact FROM customers WHERE cust_id IN (10001,10004);
+~~~
+
+合成后：
+
+~~~mysql
+SELECT cust_name,cust_contact FROM customers WHERE cust_id IN (
+	SELECT cust_id FROM orders WHERE order_num IN (
+		SELECT order_num FROM orderitems WHERE prod_id ="TNT2"	
+	)
+);
+~~~
+
+可见，在WHERE子句中使用子查询能够编写出功能很强并且很灵活的SQL语句。对于能嵌套的子查询的数目没有限制，不过在实际使用时由于性能的限制，不能嵌套太多的子查询。
+
+**列必须匹配** 在WHERE子句中使用子查询（如这里所示），应该保证SELECT语句具有与WHERE子句中相同数目的列。通常，子查询将返回单个列并且与单个列匹配，但如果需要也可以使用多个列。
+
+虽然子查询一般与IN操作符结合使用，但也可以用于测试等于（=）、不等于（<>）等。
+
+**子查询和性能** 这里给出的代码有效并获得所需的结果。但是，使用子查询并不总是执行这种类型的数据检索的最有效的方法。
+
+#### 作为计算字段使用子查询
+
+使用子查询的另一方法是创建计算字段。假如需要显示customers表中每个客户的订单总数。订单与相应的客户ID存储在orders表中。
+
+为了执行这个操作，遵循下面的步骤。
+
+(1) 从customers表中检索客户列表。
+(2) 对于检索出的每个客户，统计其在orders表中的订单数目。
+
+Ex：
+下面的代码对客户10001的订单进行计数：
+
+~~~mysql
+SELECT count(*) FROM orders WHERE cust_id = "10001";
+~~~
+
+![image-20211020174406243](./img/image-20211020174406243.png)
+
+为了对每个客户执行COUNT(\*)计算，应该将COUNT(\*)作为一个子查询。
+
+~~~mysql
+-- 筛选用户名
+SELECT cust_name,cust_contact, (
+	-- 筛选两表之间相同id的用户购买了多少的商品	
+	SELECT count(*) FROM orders WHERE orders.cust_id = customers.cust_id 
+) AS orders FROM customers ORDER BY cust_name;
+~~~
+
+![image-20211020174515662](./img/image-20211020174515662.png)
+
+**相关子查询（correlated subquery）**: 涉及外部查询的子查询。
+
+**逐渐增加子查询来建立查询**: 用子查询测试和调试查询很有技巧性，特别是在这些语句的复杂性不断增加的情况下更是如此。用子查询建立（和测试）查询的最可靠的方法是逐渐进行，这与MySQL处理它们的方法非常相同。首先，建立和测试最内层的查询。然后，用硬编码数据建立和测试外层查询，并且仅在确认它正常后才嵌入子查询。这时，再次测试它。对于要增加的每个查询，重复这些步骤。这样做仅给构造查询增加了一点点时间，但节省了以后（找出查询为什么不正常）的大量时间，并且极大地提高了查询一开始就正常工作的可能性。
+
+### 第十三章： 联结表
+
+SQL最强大的功能之一就是能在数据检索查询的执行中联结（join）表。联结是利用SQL的SELECT能执行的最重要的操作。
+
+在能够有效地使用联结前，必须了解关系表以及关系数据库设计的一些基础知识。
+
+#### 关系表
+
+假如有一个包含产品目录的数据库表，其中每种类别的物品占一行。对于每种物品要存储的信息包括产品描述和价格，以及生产该产品的供应商信息。
+
+现在，假如有由同一供应商生产的多种物品，那么在何处存储供应商信息（如，供应商名、地址、联系方法等）呢？将这些数据与产品信息分开存储的理由如下。
+
+- 因为同一供应商生产的每个产品的供应商信息都是相同的，对每个产品重复此信息既浪费时间又浪费存储空间。
+- 如果供应商信息改变（例如，供应商搬家或电话号码变动），只需改动一次即可。
+- 如果有重复数据（即每种产品都存储供应商信息），很难保证每次输入该数据的方式都相同。不一致的数据在报表中很难利用。
+
+关键是，相同数据出现多次决不是一件好事，此因素是关系数据库设计的基础。
+
+关系表的设计就是要保证把信息分解成多个表，一类数据一个表。各表通过某些常用的值（即关系设计中的关系（relational））互相关联。
+
+在这个例子中，可建立两个表，一个存储供应商信息，另一个存储产品信息。vendors表包含所有供应商信息，每个供应商占一行，每个供应商具有唯一的标识。此标识称为主键（primary key），可以是供应商ID或任何其他唯一值。
+
+products表只存储产品信息，它除了存储供应商ID（vendors表的主键）外不存储其他供应商信息。vendors表的主键又叫作products的外键，它将vendors表与products表关联，利用供应商ID能从vendors表中找出相应供应商的详细信息。
+
+**外键（foreign key）** 外键为某个表中的一列，它包含另一个表的主键值，定义了两个表之间的关系。
+
+好处：
+
+- 供应商信息不重复，从而不浪费时间和空间；
+- 如果供应商信息变动，可以只更新vendors表中的单个记录，相关表中的数据不用改动；
+- 由于数据无重复，显然数据是一致的，这使得处理数据更简单。
+
+**可伸缩性（scale）** 能够适应不断增加的工作量而不失败。设计良好的数据库或应用程序称之为可伸缩性好（scale well）。
+
+#### 为什么使用联结
+
+分解数据为多个表能更有效地存储，更方便地处理，并且具有更大的可伸缩性。但这些好处是有代价的。
+
+如果数据存储在多个表中，怎样用单条SELECT语句检索出数据？
+
+答案是使用联结。简单地说，联结是一种机制，用来在一条SELECT语句中关联表，因此称之为联结。使用特殊的语法，可以联结多个表返回一组输出，联结在运行时关联表中正确的行。
+
+#### 创建联结（⭐）
+
+~~~mysql
+SELECT vend_name AS "供应商",prod_name AS "商品名",prod_price AS "商品价格"
+FROM vendors, products
+WHERE vendors.vend_id = products.vend_id 
+ORDER BY vend_name,prod_name
+~~~
+
+![image-20211020180742393](./img/image-20211020180742393.png)
+
+可以看到要匹配的两个列以 vendors.vend_id 和 products. vend_id指定。这里需要这种完全限定列名，因为如果只给出vend_id， 则MySQL不知道指的是哪一个（它们有两个，每个表中一个）。
+
+> **完全限定列名**：在引用的列可能出现二义性时，必须使用完全限定列名（用一个点分隔的表名和列名）。如果引用一个没有用表名限制的具有二义性的列名，MySQL将返回错误。
+
+#### WHERE 语句的作用
+
+上文我们使用 `WHERE` 关键字将两个表之间创建了联结，WHERE子句作为过滤条件，它只包含那些匹配给定条件（这里是联结条件）的行。
+
+如果没有WHERE子句，第一个表中的每个行将与第二个表中的每个行配对，而不管它们逻辑上是否可以配在一起，会造成笛卡尔积。
+
+**笛卡儿积（cartesian product）** 由没有联结条件的表关系返回的结果为笛卡儿积。检索出的行的数目将是第一个表中的行数乘以第二个表中的行数。
+
+**不要忘了WHERE子句** 应该保证所有联结都有WHERE子句，否则MySQL将返回比想要的数据多得多的数据。同理，应该保证WHERE子句的正确性。不正确的过滤条件将导致MySQL返回不正确的数据。
+
+**叉联结** 有时我们会听到返回称为叉联结（cross join）的笛卡儿积的联结类型。
+
+#### 内部联结
+
+**INNER JOIN（内连接,或等值连接）ON**：获取两个表中字段匹配关系的记录。
+
+目前为止所用的联结称为等值联结（equijoin），它基于两个表之间的相等测试。这种联结也称为内部联结。其实，对于这种联结可以使用稍微不同的语法来明确指定联结的类型。
+
+~~~mysql
+SELECT vend_name AS "供应商",prod_name AS "商品名",prod_price AS "商品价格"
+FROM vendors 
+INNER JOIN products
+ON vendors.vend_id = products.vend_id;
+~~~
+
+这里，两个表之间的关系是FROM子句的组成部分，以INNER JOIN指定。在使用这种语法时，联结条件用特定的ON子句而不是WHERE子句给出。传递给ON的实际条件与传递给WHERE的相同。
+
+![img](./img/img_innerjoin.gif)
+
+**LEFT JOIN（左连接）**：获取左表所有记录，即使右表没有对应匹配的记录。
+
+![img](./img/img_leftjoin.gif)
+
+**RIGHT JOIN（右连接）：** 与 LEFT JOIN 相反，用于获取右表所有记录，即使左表没有对应匹配的记录。
+
+![img](./img/img_rightjoin.gif)
+
+**使用哪种语法**： ANSI SQL规范首选INNER JOIN语法。此外，尽管使用WHERE子句定义联结的确比较简单，但是使用明确的联结语法能够确保不会忘记联结条件，有时候这样做也能影响性能。
+
+#### 联结多个表
+
+SQL对一条SELECT语句中可以联结的表的数目没有限制。
+创建联结的基本规则也相同：首先列出所有表，然后定义表之间的关系。
+
+~~~mysql
+SELECT prod_name AS "商品名",vend_name AS "供应商",prod_price AS "商品价格",quantity AS "数量"
+FROM products,vendors,orderitems
+WHERE products.vend_id = vendors.vend_id 
+AND products.prod_id = orderitems.prod_id 
+AND orderitems.order_num = 20005;
+~~~
+
+![image-20211020195548715](./img/image-20211020195548715.png)
+
+这里的FROM子句列出了3个表，而WHERE子句定义了这两个联结条件，而第三个联结条件用来过滤出订单20005中的物品。
+
+**性能考虑** MySQL在运行时关联指定的每个表以处理联结。这种处理可能是非常耗费资源的，因此应该仔细，不要联结不必要的表。联结的表越多，性能下降越厉害。
+
+### 创建高级联结
