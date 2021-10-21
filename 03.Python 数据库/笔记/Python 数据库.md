@@ -835,7 +835,7 @@ select sum(`size`) from houses;
 
 **NULL值** SUM()函数忽略列值为NULL的行
 
-### 第十一章： 汇总数据
+### 第十一章： 分组数据
 
 本章将介绍如何分组数据，以便能汇总表内容的子集。这涉及两个新SELECT语句子句，分别是GROUP BY子句和HAVING子句。
 
@@ -1180,4 +1180,151 @@ AND orderitems.order_num = 20005;
 
 **性能考虑** MySQL在运行时关联指定的每个表以处理联结。这种处理可能是非常耗费资源的，因此应该仔细，不要联结不必要的表。联结的表越多，性能下降越厉害。
 
-### 创建高级联结
+### 第十四章： 创建高级联结
+
+别名除了用于列名和计算字段外，SQL还允许给表名起别名。这样做有两个主要理由：
+
+- 缩短 SQL 语句
+- 允许在单条SELECT语句中多次使用相同的表。
+
+~~~mysql
+SELECT cust_name,cust_contact
+FROM customers c ,orders o ,orderitems o2 
+WHERE c.cust_id = o.cust_id 
+AND o2.order_num = o.order_num 
+AND prod_id = "TNT2";
+~~~
+
+> 甚至可以将 as 省略。
+
+![image-20211021171049271](./img/image-20211021171049271.png)
+
+应该注意，表别名只在查询执行中使用。与列别名不一样，表别名不返回到客户机。
+
+#### 不同类型的联结
+
+我们使用的只是称为内部联结或等值联结（equijoin）的简单联结。现在来看3种其他联结，它们分别是自联结、自然联结和外部联结。
+
+#### 自联结
+
+如前所述，使用表别名的主要原因之一是能在单条SELECT语句中不止一次引用相同的表。
+
+分解：
+
+~~~mysql
+SELECT vend_id FROM products p WHERE prod_id = 'DTNTR';
+SELECT prod_id,prod_name FROM products p WHERE vend_id =1003;
+~~~
+
+合并后：
+
+~~~mysql
+SELECT prod_id,prod_name FROM products WHERE vend_id =(
+	SELECT vend_id FROM products WHERE prod_id = 'DTNTR'
+)
+~~~
+
+![image-20211021171646199](./img/image-20211021171646199.png)
+
+这是第一种解决方案，它使用了子查询。内部的SELECT语句做了一个简单的检索，返回生产ID为DTNTR的物品供应商的vend_id。该ID用于外部查询的WHERE子句中，以便检索出这个供应商生产的所有物品
+
+使用联结的相同查询：
+
+~~~mysql
+SELECT p1.prod_id,p1.prod_name 
+FROM products p1,products p2 
+WHERE p1.vend_id =p2.vend_id 
+AND p2.prod_id ='DTNTR';
+~~~
+
+![image-20211021171912110](./img/image-20211021171912110.png)
+
+此查询中需要的两个表实际上是相同的表，因此products表在FROM子句中出现了两次。虽然这是完全合法的，但对products的引用具有二义性，因为MySQL不知道你引用的是products表中的哪个实例。
+
+为解决此问题，使用了表别名。products的第一次出现为别名p1，第二次出现为别名p2。现在可以将这些别名用作表名。
+
+**用自联结而不用子查询**： 自联结通常作为外部语句用来替代从相同表中检索数据时使用的子查询语句。虽然最终的结果是相同的，但有时候处理联结远比处理子查询快得多。应该试一下两种方法，以确定哪一种的性能更好。
+
+#### 自然联结
+
+无论何时对表进行联结，应该至少有一个列出现在不止一个表中（被联结的列）。标准的联结（前一章中介绍的内部联结）返回所有数据，甚至相同的列多次出现。自然联结排除多次出现，使每个列只返回一次。
+
+怎样完成这项工作呢？答案是，系统不完成这项工作，由你自己完成它。自然联结是这样一种联结，其中你只能选择那些唯一的列。这一般是通过对表使用通配符（SELECT *），对所有其他表的列使用明确的子集来完成的。
+
+~~~mysql
+SELECT c.*,o.order_num,o.order_date,oi.prod_id,oi.quantity,oi.item_price
+FROM customers c ,orders o ,orderitems oi
+WHERE c.cust_id = o.cust_id 
+AND oi.order_num = o.order_num 
+AND prod_id = "FB";
+~~~
+
+![image-20211021172636074](./img/image-20211021172636074.png)
+
+在这个例子中，通配符只对第一个表使用。所有其他列明确列出，所以没有重复的列被检索出来。
+
+#### 外部联结
+
+外部联结根据情况来确定是否包含那些在相关表中没有匹配的行
+
+语法：LEFT/RIGHT/FULL OUTER JOIN
+
+1. 左外部联结(又叫左联结)
+左表的行一定会列出，右表如果没有匹配的行，那么列值就为null。
+
+2. 右外部联结(又叫右联结)
+和左联结类似，只不过以右表为主表而已，左联结和右联结可以相互转化。
+
+3. 全外部联结
+返回左表和右表的所有行，不管有没有匹配，同时具有左联结和右联结的特性。
+
+内连接：
+
+~~~mysql
+-- 内连接：不会检测到值为NULL的数据
+SELECT customers.cust_id , orders.order_num 
+FROM customers INNER JOIN orders
+ON customers.cust_id = orders.cust_id;
+~~~
+
+![image-20211021175118915](./img/image-20211021175118915.png)
+
+外部联结：
+
+~~~mysql
+-- 外连接：可以检测到值为NULL的数据
+SELECT customers.cust_id , orders.order_num 
+FROM customers LEFT OUTER JOIN orders
+ON customers.cust_id = orders.cust_id;
+~~~
+
+![image-20211021175158165](./img/image-20211021175158165.png)
+
+外部联结还包括没有关联行的行
+
+**没有*=操作符** MySQL不支持简化字符*=和=*的使用，这两种操作符在其他DBMS中是很流行的
+
+**外部联结的类型**： 存在两种基本的外部联结形式：左外部联结和右外部联结。它们之间的唯一差别是所关联的表的顺序不同。换句话说，左外部联结可通过颠倒FROM或WHERE子句中表的顺序转换为右外部联结。因此，两种类型的外部联结可互换使用，而究竟使用哪一种纯粹是根据方便而定。
+
+#### 使用带聚集函数的联结
+
+~~~mysql
+SELECT customers.cust_name , customers.cust_id ,count(orders.order_num) AS num_ord
+FROM customers INNER JOIN orders
+ON customers.cust_id  = orders.cust_id 
+GROUP BY customers.cust_id;
+~~~
+
+此SELECT语句使用INNER JOIN将customers和orders表互相关联。GROUP BY 子句按客户分组数据，因此，函数调用 COUNT (orders.order_num)对每个客户的订单计数，将它作为num_ord返回。
+
+#### 使用联结和联结条件
+
+使用要点：
+
+- 注意所使用的联结类型。一般我们使用内部联结，但使用外部联结也是有效的。
+- 保证使用正确的联结条件，否则将返回不正确的数据。
+- 应该总是提供联结条件，否则会得出笛卡儿积。
+- 在一个联结中可以包含多个表，甚至对于每个联结可以采用不同的联结类型。虽然这样做是合法的，一般也很有用，但应该在一起测试它们前，分别测试每个联结。这将使故障排除更为简单。
+
+### 第十五章： 组合查询
+
