@@ -1328,3 +1328,396 @@ GROUP BY customers.cust_id;
 
 ### 第十五章： 组合查询
 
+多数SQL查询都只包含从一个或多个表中返回数据的单条SELECT语句。MySQL也允许执行多个查询（多条SELECT语句），并将结果作为单个查询结果集返回。这些组合查询通常称为并（union）或复合查询（compound query）。
+
+有两种基本情况，其中需要使用组合查询：
+
+- 在单个查询中从不同的表返回类似结构的数据；
+- 对单个表执行多个查询，按单个查询返回数据。
+
+> **组合查询和多个WHERE条件** 多数情况下，组合相同表的两个查询完成的工作与具有多个WHERE子句条件的单条查询完成的工作相同。换句话说，任何具有多个WHERE子句的SELECT语句都可以作为一个组合查询给出。
+
+#### 创建组合查询
+
+可用UNION操作符来组合数条SQL查询。
+
+**使用 UNION：**
+
+MySQL UNION 操作符语法格式：
+
+~~~mysql
+SELECT expression1, expression2, ... expression_n
+FROM tables
+[WHERE conditions]
+UNION [ALL | DISTINCT]
+SELECT expression1, expression2, ... expression_n
+FROM tables
+[WHERE conditions];
+~~~
+
+参数:
+
+- expression1, expression2, ... expression_n: 要检索的列。
+- tables: 要检索的数据表。
+- WHERE conditions: 可选， 检索条件。
+- DISTINCT: 可选，删除结果集中重复的数据。默认情况下 UNION 操作符已经删除了重复数据，所以 DISTINCT 修饰符对结果没啥影响。
+- ALL: 可选，返回所有结果集，包含重复数据。
+- UNION的使用很简单。所需做的只是给出每条SELECT语句，在各条语句之间放上关键字UNION。
+
+**UNION 只会选取不同的值。请使用 UNION ALL 来选取重复的值！**
+
+~~~mysql
+SELECT vend_id,prod_id,prod_price
+FROM products
+WHERE prod_price <= 5;
+~~~
+
+![image-20211022165932673](./img/image-20211022165932673.png)
+
+~~~mysql
+SELECT vend_id,prod_id,prod_price
+FROM products
+WHERE vend_id in(1001,1002)
+~~~
+
+![image-20211022170105405](./img/image-20211022170105405.png)
+
+#### UNION 使用规则
+
+- UNION必须由两条或两条以上的SELECT语句组成,语句之间用关键字UNION分隔（因此,如果组合4条SELECT语句,将要使用3个UNION关键字）
+- UNION中的每个查询必须包含相同的列、表达式或聚集函数（不过各个列不需要以相同的次序列出）
+- 列数据类型必须兼容：类型不必完全相同，但必须是DBMS可以隐含地转换的类型（例如，不同的数值类型或不同的日期类型）。
+
+> **UNION与WHERE** UNION几乎总是完成与多个WHERE条件相同的工作。UNION ALL为UNION的一种形式，它完成WHERE子句完成不了的工作。如果确实需要每个条件的匹配行全部出现（包括重复行），则必须使用UNION ALL而不是WHERE。
+
+#### 对组合查询结果排序
+
+~~~mysql
+SELECT vend_id,prod_id,prod_price
+FROM products
+WHERE prod_price <= 5
+UNION ALL 
+SELECT vend_id,prod_id,prod_price
+FROM products
+WHERE vend_id in(1001,1002)
+ORDER BY vend_id, prod_price;
+~~~
+
+![image-20211022171420950](./img/image-20211022171420950.png)
+
+这条UNION在最后一条SELECT语句后使用了ORDER BY子句。虽然ORDER BY子句似乎只是最后一条SELECT语句的组成部分，但实际上MySQL将用它来排序所有SELECT语句返回的所有结果。
+
+> 注意：UNION的组合查询还可以用字不相同的表中
+
+### 第十六章： 全文本搜索
+
+> **引擎支持全文本搜索：** `Mysql` 支持几种基本的数据库引擎。并非所有的引擎都支持，最常用的两个是 `MyISAM` 和 `InnoDB`; 前者支持全文本支持，后者则不行。在我们创建表的时候（`productnotes表`）使用的是 `MyISAM`。
+
+LIKE关键字，它利用通配操作符匹配文本（和部分文本）。使用LIKE，能够查找包含特殊值或部分值的行（不管这些值位于列内什么位置）。
+
+正则篇章，用基于文本的搜索作为正则表达式匹配列值的更进一步的介绍。使用正则表达式，可以编写查找所需行的非常复杂的匹配模式。
+
+搜索机制的限制：
+
+- 性能——通配符和正则表达式匹配通常要求MySQL尝试匹配表中所有行（而且这些搜索极少使用表索引）。因此，由于被搜索行数不断增加，这些搜索可能非常耗时。
+- 明确控制——使用通配符和正则表达式匹配，很难（而且并不总是能）明确地控制匹配什么和不匹配什么。例如，指定一个词必须匹配，一个词必须不匹配，而一个词仅在第一个词确实匹配的情况下才可以匹配或者才可以不匹配。
+- 智能化的结果——虽然基于通配符和正则表达式的搜索提供了非常灵活的搜索，但它们都不能提供一种智能化的选择结果的方法。例如，一个特殊词的搜索将会返回包含该词的所有行，而不区分包含单个匹配的行和包含多个匹配的行（按照可能是更好的匹配来排列它们）。类似，一个特殊词的搜索将不会找出不包含该词但包含其他相关词的行。
+
+所有这些限制以及更多的限制都可以用全文本搜索来解决。在使用全文本搜索时，MySQL不需要分别查看每个行，不需要分别分析和处理每个词。MySQL创建指定列中各词的一个索引，搜索可以针对这些词进行。这样，MySQL可以快速有效地决定哪些词匹配（哪些行包含它们），哪些词不匹配，它们匹配的频率，等等。
+
+#### 使用全文本搜索
+
+为了进行全文本搜索，必须索引被搜索的列，而且要随着数据的改变不断地重新索引。在对表列进行适当设计后，MySQL会自动进行所有的索引和重新索引。
+
+在索引之后，SELECT可与Match()和Against()一起使用以实际执行搜索
+
+#### 启用全文本搜索 `MATCH() AGAINST()`
+
+一般在创建表时启用全文本搜索。CREATE TABLE语句接受FULLTEXT子句，它给出被索引列的一个逗号分隔的列表。
+
+~~~mysql
+CREATE TABLE productnotes(
+  note_id    int           NOT NULL AUTO_INCREMENT,
+  prod_id    char(10)      NOT NULL,
+  note_date datetime       NOT NULL,
+  note_text  text          NULL ,
+  PRIMARY KEY(note_id),
+  FULLTEXT(note_text) -- 开启全文本搜索
+) ENGINE=MyISAM;
+~~~
+
+为了进行全文本搜索，MySQL根据子句FULLTEXT(note_text)的指示对它进行索引。这里的FULLTEXT索引单个列，如果需要也可以指定多个列。
+
+在定义之后，MySQL自动维护该索引。在增加、更新或删除行时，索引随之自动更新。
+
+> **不要在导入数据时使用FULLTEXT** 更新索引要花时间，虽然不是很多，但毕竟要花时间。如果正在导入数据到一个新表，此时不应该启用FULLTEXT索引。应该首先导入所有数据，然后再修改表，定义FULLTEXT。这样有助于更快地导入数据（而且使索引数据的总时间小于在导入每行时分别进行索引所需的总时间）。
+
+~~~mysql
+SELECT note_text
+FROM productnotes
+WHERE match(note_text) Against("rabbit");
+~~~
+
+![image-20211022173016904](./img/image-20211022173016904.png)
+
+此SELECT语句检索单个列note_text。由于WHERE子句，一个全文本搜索被执行。Match(note_text)指示MySQL针对指定的列进行搜索，Against('rabbit')指定词rabbit作为搜索文本。
+
+> 使用完整的 Match() 说 明 传递给 Match() 的值必须与FULLTEXT()定义中的相同。如果指定多个列，则必须列出它们（而且次序正确）。
+
+#### 使用扩展搜索 `WITH QUERY EXPANSION`
+
+查询扩展用来设法放宽所返回的全文本搜索结果的范围。考虑下面的情况。你想找出所有提到anvils的注释。只有一个注释包含词anvils，但你还想找出可能与你的搜索有关的所有其他行，即使它们不包含词anvils。
+
+这也是查询扩展的一项任务。在使用查询扩展时，MySQL对数据和索引进行两遍扫描来完成搜索：
+
+- 首先，进行一个基本的全文本搜索，找出与搜索条件匹配的所有行；
+- 其次，MySQL检查这些匹配行并选择所有有用的词（我们将会简要地解释MySQL如何断定什么有用，什么无用）。 
+- 再其次，MySQL再次进行全文本搜索，这次不仅使用原来的条件，而且还使用所有有用的词。
+
+格式：
+
+~~~mysql
+SELECT column1, column2
+FROM table1
+WHERE MATCH(column1,column2) 
+      AGAINST('keyword',WITH QUERY EXPANSION);
+~~~
+
+~~~mysql
+SELECT note_text
+FROM productnotes
+WHERE match(note_text) against("anvils" WITH QUERY EXPANSION);
+~~~
+
+![image-20211022180953496](./img/image-20211022180953496.png)
+
+这次返回了7行。第一行包含词anvils，因此等级最高。第二行与anvils无关，但因为它包含第一行中的两个词（customer和recommend），所以也被检索出来。第3行也包含这两个相同的词，但它们在文本中的位置更靠后且分开得更远，因此也包含这一行，但等级为第三。第三行确实也没有涉及anvils（按它们的产品名）。
+
+正如所见，查询扩展极大地增加了返回的行数，但这样做也增加了你实际上并不想要的行的数目。
+
+> **行越多越好：** 表中的行越多（这些行中的文本就越多），使用查询扩展返回的结果越好。
+
+#### 布尔文本搜索 `IN BOOLEAN MODE`
+
+MySQL支持全文本搜索的另外一种形式，称为布尔方式（boolean mode）。以布尔方式，可以提供关于如下内容的细节：
+
+- 要匹配的词；
+- 要排斥的词（如果某行包含这个词，则不返回该行，即使它包含其他指定的词也是如此）； 
+- 排列提示（指定某些词比其他词更重要，更重要的词等级更高）； 
+- 表达式分组；
+- 另外一些内容。
+
+> **即使没有FULLTEXT索引也可以使用：** 布尔方式不同于迄今为止使用的全文本搜索语法的地方在于，即使没有定义FULLTEXT索引，也可以使用它。但这是一种非常缓慢的操作（其性能将随着数据量的增加而降低）
+
+~~~mysql
+SELECT note_text
+FROM productnotes
+WHERE match(note_text) against("heavy" IN BOOLEAN MODE);
+~~~
+
+![image-20211022181025750](./img/image-20211022181025750.png)
+
+> IN BOOLEAN MODE的行为差异 虽然这个例子的结果与没有IN BOOLEAN MODE的相同，但其行为有一个重要的差别（即使在这个特殊的例子没有表现出来）。
+
+**为了匹配包含heavy但不包含任意以rope开始的词的行:**
+
+~~~mysql
+SELECT note_text
+FROM productnotes
+WHERE match(note_text) against("heavy -rope*" IN BOOLEAN MODE);
+~~~
+
+![image-20211022181930848](./img/image-20211022181930848.png)
+
+**全文本布尔操作符**
+
+| 布尔操作符 | 描述 |
+|-----------|------|
+| + | 包含，词必须存在 |
+| - | 排除，词必须不出现 |
+| > | 包含，而且增加等级值 |
+| < | 包含，而且增加等级值 |
+| () | 把词组成子表达式（允许这些子表达式作为一个组被包含、排除、排列等） |
+| ~ | 取消一个词的排序值 |
+| * | 词尾的通配符 |
+| "" | 定义一个短语（与单个词的列表不一样，它匹配整个短语以便包含或排除这个短语） |
+
+#### 全文本搜索的使用说明
+
+- 在索引全文本数据时，短词被忽略且从索引中排除。短词定义为那些具有3个或3个以下字符的词（如果需要，这个数目可以更改）。 
+- MySQL带有一个内建的非用词（stopword）列表，这些词在索引全文本数据时总是被忽略。如果需要，可以覆盖这个列表（请参阅MySQL文档以了解如何完成此工作）。 
+- 许多词出现的频率很高，搜索它们没有用处（返回太多的结果）。因此，MySQL规定了一条50%规则，如果一个词出现在50%以上的行中，则将它作为一个非用词忽略。50%规则不用于IN BOOLEAN MODE。 
+- 如果表中的行数少于3行，则全文本搜索不返回结果（因为每个词或者不出现，或者至少出现在50%的行中）。 
+- 忽略词中的单引号。例如，don't索引为dont。 
+- 不具有词分隔符（包括日语和汉语）的语言不能恰当地返回全文本搜索结果。
+- 如前所述，仅在MyISAM数据库引擎中支持全文本搜索。
+
+### 第十七章： 数据插入
+
+`INSERT` 是用来插入（或添加）行到数据库表的。插入可以用几种方式使用：
+
+- 插入完整的行；
+- 插入行的一部分；
+- 插入多行；
+- 插入某些查询的结果。
+
+#### 插入完整行
+
+以下为向MySQL数据表插入数据通用的 INSERT INTO SQL语法：
+
+~~~mysql
+INSERT INTO table_name ( field1, field2,...fieldN )
+                       VALUES
+                       ( value1, value2,...valueN );
+~~~
+
+--------
+
+~~~mysql
+INSERT INTO customers 
+VALUES (NULL,"Pep E. LaPew","100 Main Street","Los Angeles","CA","90046","USA",NULL,NULL);
+~~~
+
+![image-20211022200428958](./img/image-20211022200428958.png)
+
+虽然这种语法很简单，但并不安全，应该尽量避免使用。上面的SQL语句高度依赖于表中列的定义次序，并且还依赖于其次序容易获得的信息。即使可得到这种次序信息，也不能保证下一次表结构变动后各个列保持完全相同的次序。因此，编写依赖于特定列次序的SQL语句是很不安全的。如果这样做，有时难免会出问题。
+
+~~~mysql
+INSERT INTO customers(cust_id,cust_name,cust_address,cust_city,cust_state,cust_zip,cust_country,cust_contact,cust_email)
+VALUES (NULL,"Pep E. LaPew","100 Main Street","Los Angeles","CA","900467","USA",NULL,NULL);
+~~~
+
+![image-20211022201039908](./img/image-20211022201039908.png)
+
+> **总是使用列的列表** 一般不要使用没有明确给出列的列表的INSERT语句。使用列的列表能使SQL代码继续发挥作用，即使表结构发生了变化。
+
+> **仔细地给出值** 不管使用哪种INSERT语法，都必须给出VALUES的正确数目。如果不提供列名，则必须给每个表列提供一个值。如果提供列名，则必须对每个列出的列给出一个值。如果不这样，将产生一条错误消息，相应的行插入不成功。
+
+如果表的定义允许，则可以在INSERT操作中省略某些列。省略的列必须满足以下某个条件。
+
+- 该列定义为允许NULL值（无值或空值）。 
+- 在表定义中给出默认值。这表示如果不给出值，将使用默认值。
+
+如果对表中不允许NULL值且没有默认值的列不给出值，则MySQL将产生一条错误消息，并且相应的行插入不成功。
+
+**提高整体性能**:数据库经常被多个客户访问，对处理什么请求以及用什么次序处理进行管理是MySQL的任务。INSERT操作可能很耗时（特别是有很多索引需要更新时），而且它可能降低等待处理的SELECT语句的性能。 
+
+如果数据检索是最重要的（通常是这样），则你可以通过在INSERT和INTO之间添加关键字LOW_PRIORITY，指示MySQL降低INSERT语句的优先级
+
+~~~mysql
+INSERT LOW PRIORITY INTO...
+~~~
+
+#### 插入多行
+
+~~~mysql
+INSERT INTO 
+customers(cust_id,cust_name,cust_address,cust_city,cust_state,cust_zip,cust_country,cust_contact,cust_email)
+VALUES 
+(NULL,"Pep E. LaPew","100 Main Street","Los Angeles","CA","900467","USA",NULL,NULL),
+(NULL,"Pep A. LaPew","10 Main Street","Los Angeles","CA","900437","USA",NULL,NULL),
+(NULL,"Pep B. LaPew","2100 Main Street","Los Angeles","CA","900457","USA",NULL,NULL)
+~~~
+
+![image-20211022201714634](./img/image-20211022201714634.png)
+
+**以其中单条INSERT语句有多组值，每组值用一对圆括号括起来，用逗号分隔。**
+
+提高INSERT的性能:此技术可以提高数据库处理的性能，因为MySQL用单条INSERT语句处理多个插入比使用多条INSERT语句快。
+
+#### 插入检索出的数据
+
+INSERT一般用来给表插入一个指定列值的行。但是，INSERT还存在另一种形式，可以利用它将一条SELECT语句的结果插入表中。这就是所谓的INSERT SELECT，顾名思义，它是由一条INSERT语句和一条SELECT语句组成的。
+
+~~~mysql
+INSERT INTO custnew (
+cust_id,cust_name,cust_address,cust_city,cust_state,cust_zip,cust_country
+) SELECT cust_id,cust_name,cust_address,cust_city,cust_state,cust_zip,cust_country
+FROM customers;
+~~~
+
+![image-20211022202837263](./img/image-20211022202837263.png)
+
+![image-20211022202911287](./img/image-20211022202911287.png)
+
+INSERT SELECT中SELECT语句可包含WHERE子句以过滤插入的数据。
+
+### 第十八章： 更新和删除数据
+
+#### 更新（修改）数据
+
+更新（修改）表中的数据，使用 UPDATE 语句。
+
+- 更新表中的特定行
+- 更新表中的所有行
+
+语法格式：
+
+~~~mysql
+UPDATE table_name SET field1=new-value1, field2=new-value2
+[WHERE Clause]
+~~~
+
+> 不要省略WHERE子句 在使用UPDATE时一定要注意细心。因为稍不注意，就会更新表中所有行。
+
+UPDATE语句非常容易使用，甚至可以说是太容易使用了。基本的UPDATE语句由3部分组成，分别是：
+
+- 要更新的表；
+- 列名和它们的新值；
+- 确定要更新行的过滤条件。
+
+~~~mysql
+UPDATE customers 
+SET cust_name = "Vegirl"
+WHERE cust_id = 10009;
+~~~
+
+![image-20211022204449394](./img/image-20211022204449394.png)
+
+~~~mysql
+UPDATE customers 
+SET cust_name = "Dante",cust_email = "Sparta@gmail.com"
+WHERE cust_id = 10008;
+~~~
+
+![image-20211022205205413](./img/image-20211022205205413.png)
+
+> IGNORE关键字: 如果用UPDATE语句更新多行，并且在更新这些行中的一行或多行时出一个现错误，则整个UPDATE操作被取消（错误发生前更新的所有行被恢复到它们原来的值）。为即使是发生错误，也继续进行更新，可使用IGNORE关键字，如下所示： UPDATE IGNORE customers…
+
+#### 删除数据
+
+为了从一个表中删除（去掉）数据，使用DELETE语句。可以两种方式使用DELETE： 
+
+- 从表中删除特定的行；
+- 从表中删除所有行。
+
+语法格式：
+
+~~~mysql
+DELETE FROM table_name [WHERE Clause]
+~~~
+
+删除指定行：
+
+~~~mysql
+DELETE FROM customers 
+WHERE cust_id =10010;
+~~~
+
+![image-20211022205518881](./img/image-20211022205518881.png)
+
+DELETE不需要列名或通配符。DELETE删除整行而不是删除列。为了删除指定的列，请使用UPDATE语句。
+
+#### 更新和删除的指导原则
+
+- 除非确实打算更新和删除每一行，否则绝对不要使用不带WHERE子句的UPDATE或DELETE语句。
+- 保证每个表都有主键（如果忘记这个内容，请参阅第15章），尽可能像WHERE子句那样使用它（可以指定各主键、多个值或值的范围）。 
+- 在对UPDATE或DELETE语句使用WHERE子句前，应该先用SELECT进行测试，保证它过滤的是正确的记录，以防编写的WHERE子句不正确。
+- 使用强制实施引用完整性的数据库，这样MySQL将不允许删除具有与其他表相关联的数据的行。
+
+> **小心使用** MySQL没有撤销（undo）按钮。应该非常小心地使用UPDATE和DELETE，否则你会发现自己更新或删除了错误的数据
+
+### 第十九章： 创建和操纵表
+
+#### 创建表 `CREATE TABLE`
+
