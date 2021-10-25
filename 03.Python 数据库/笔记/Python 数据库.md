@@ -1721,3 +1721,276 @@ DELETE不需要列名或通配符。DELETE删除整行而不是删除列。为�
 
 #### 创建表 `CREATE TABLE`
 
+MySQL不仅用于表数据操纵，而且还可以用来执行数据库和表的所有操作，包括表本身的创建和处理。
+
+一般有两种创建表的方法：
+
+- 使用具有交互式创建和管理表的工具（如第2章讨论的工具）； 
+- 表也可以直接用MySQL语句操纵。
+
+为了用程序创建表，可使用SQL的CREATE TABLE语句。
+
+#### 表创建基础
+
+为利用CREATE TABLE创建表，必须给出下列信息：
+
+- 新表的名字，在关键字CREATE TABLE之后给出；
+- 表列的名字和定义，用逗号分隔。
+
+CREATE TABLE语句也可能会包括其他关键字或选项，但至少要包括表的名字和列的细节。
+
+~~~mysql
+CREATE TABLE customers(
+  cust_id      int       NOT NULL AUTO_INCREMENT,
+  cust_name    char(50)  NOT NULL ,
+  cust_address char(50)  NULL ,
+  cust_city    char(50)  NULL ,
+  cust_state   char(5)   NULL ,
+  cust_zip     char(10)  NULL ,
+  cust_country char(50)  NULL ,
+  cust_contact char(50)  NULL ,
+  cust_email   char(255) NULL ,
+  PRIMARY KEY (cust_id)
+) ENGINE=InnoDB;
+~~~
+
+#### 使用 NULL 值
+
+允许NULL值的列也允许在插入行时不给出该列的值。不允许NULL值的列不接受该列没有值的行，换句话说，在插入或更新行时，该列必须有值。
+
+每个表列或者是NULL列，或者是NOT NULL列，这种状态在创建时由表的定义规定。
+
+~~~mysql
+CREATE TABLE orders(
+  order_num  int      NOT NULL AUTO_INCREMENT,
+  order_date datetime NOT NULL ,
+  cust_id    int      NOT NULL ,
+  PRIMARY KEY (order_num)
+) ENGINE=InnoDB;
+~~~
+
+> 理解NULL 不要把NULL值与空串相混淆。NULL值是没有值，它不是空串。如果指定''（两个单引号，其间没有字符），这在NOT NULL列中是允许的。空串是一个有效的值，它不是无值。NULL值用关键字NULL而不是空串指定
+
+#### 主键再介绍
+
+正如所述，主键值必须唯一。即，表中的每个行必须具有唯一的主键值。如果主键使用单个列，则它的值必须唯一。如果使用多个列，则这些列的组合值必须唯一。
+
+**主键可以创建时定义，也可以创建后定义。**
+
+主键和NULL值，主键为其值唯一标识表中每个行的列。主键中只能使用不允许NULL值的列。允许NULL值的列不能作为唯一标识。
+
+#### AUTO_INCREMENT
+
+`AUTO_INCREMENT` 自动增长，当我们将这个定义给当前列的后，在数据添加后该数值会不断的递增。
+
+每个表只允许一个AUTO_INCREMENT列，而且它必须被索引。
+
+#### 指定默认值
+
+如果在插入行时没有给出值，MySQL允许指定此时使用的默认值。默认值用CREATE TABLE语句的列定义中的DEFAULT关键字指定。
+
+~~~mysql
+CREATE TABLE `XXX`(
+  `ID` INT(11) NOT NULL AUTO_INCREMENT DEFAULT
+)
+~~~
+
+> **不允许函数** 与大多数DBMS不一样，MySQL不允许使用函数作为默认值，它只支持常量。
+> 使用默认值而不是NULL值 许多数据库开发人员使用默认值而不是NULL列，特别是对用于计算或数据分组的列更是如此。
+
+#### 引擎类型
+
+MySQL有一个具体管理和处理数据的内部引擎。
+
+在你使用CREATE TABLE语句时，该引擎具体创建表，而在你使用SELECT语句或进行其他数据库处理时，该引擎在内部处理你的请求。多数时候，此引擎都隐藏在DBMS内，不需要过多关注它。
+
+但MySQL与其他DBMS不一样，它具有多种引擎。它打包多个引擎，这些引擎都隐藏在MySQL服务器内，全都能执行CREATE TABLE和SELECT等命令。
+
+`ENGINE=InnDB`：事务处理引擎，它不支持全文本搜索。
+`ENGINE=MEMORY`：功能相当于MyISAM，但由于数据存储再内存中，速度快（特别适合于临时表）；
+`ENGINE=MyISAM`：一个性能极高的引擎，支持全文本搜索，但是不支持事务处理。
+
+> **外键不能跨引擎** 混用引擎类型有一个大缺陷。外键（用于强制实施引用完整性）不能跨引擎，即使用一个引擎的表不能引用具有使用不同引擎的表的外键。
+
+#### 更新表
+
+为更新表定义，可使用ALTER TABLE语句。但是，理想状态下，当表中存储数据以后，该表就不应该再被更新。在表的设计过程中需要花费大量时间来考虑，以便后期不对该表进行大的改动。
+
+注意点：
+
+- 在ALTER TABLE之后给出要更改的表名（该表必须存在，否则将出错）；
+- 所做更改的列表。
+
+语法格式：
+
+~~~mysql
+-- 添加
+ALTER TABLE 表名 ADD 列名 数据类型...
+-- 删除
+ALTER TABLE 表名 DROP 列名
+-- 修改已写好的列的数据类型
+ALTER TABLE 表名 MODIFY 列名 数据类型...
+-- 修改将列替换
+ALTER TABLE 表名 CHANGE 要替换的列 新的列名 数据类型...
+-- 改默认值
+ALTER TABLE 表名 ALTER 列 SET DEFAULT 新值
+-- 删除默认值
+ALTER TABLE 表名 ALTER 列 DROP DEFAULT
+-- 修改表名
+ALTER TABLE 旧表名 RENAME TO 新表名
+~~~
+
+~~~mysql
+ALTER TABLE orderitems ADD CONSTRAINT fk_orderitems_orders FOREIGN KEY (order_num) REFERENCES orders (order_num);
+
+ALTER TABLE orderitems ADD CONSTRAINT fk_orderitems_products FOREIGN KEY (prod_id) REFERENCES products (prod_id);
+
+ALTER TABLE orders ADD CONSTRAINT fk_orders_customers FOREIGN KEY (cust_id) REFERENCES customers (cust_id);
+
+ALTER TABLE products ADD CONSTRAINT fk_products_vendors FOREIGN KEY (vend_id) REFERENCES vendors (vend_id);
+~~~
+
+复杂的表结构更改一般需要手动删除过程，它涉及以下步骤：
+
+- 用新的列布局创建一个新表；
+- 使用INSERT SELECT语句从旧表复制数据到新表。如果有必要，可使用换函数和计算字段；
+- 检验包含所需数据的新表；
+- 重命名旧表（如果确定，可以删除它）； 
+- 用旧表原来的名字重命名新表；
+- 根据需要，重新创建触发器、存储过程、索引和外键。
+
+> **小心使用ALTER TABLE** 使用ALTER TABLE要极为小心，应该在进行改动前做一个完整的备份（模式和数据的备份）。数据库表的更改不能撤销，如果增加了不需要的列，可能不能删除它们。类似地，如果删除了不应该删除的列，可能会丢失该列中的所有数据。
+
+#### 删除表
+
+使用DROP TABLE语句即可:
+
+~~~mysql
+GROP TABLE xxx;
+~~~
+
+> 注意：这是永久删除
+
+#### 重命名表
+
+~~~mysql
+RENAME TABLE old_table_name TO new_table_name;
+~~~
+
+### 第二十章： Mysql 视图
+
+视图是虚拟的表。与包含数据的表不一样，视图只包含使用时动态检索数据的查询。
+
+下面是视图的一些常见应用。
+
+- 重用SQL语句。
+- 简化复杂的SQL操作。在编写查询后，可以方便地重用它而不必知道它的基本查询细节。
+- 使用表的组成部分而不是整个表。
+- 保护数据。可以给用户授予表的特定部分的访问权限而不是整个表的访问权限。
+- 更改数据格式和表示。视图可返回与底层表的表示和格式不同的数据。
+
+在视图创建之后，可以用与表基本相同的方式利用它们。可以对视图执行SELECT操作，过滤和排序数据，将视图联结到其他视图或表，甚至能添加和更新数据（添加和更新数据存在某些限制。）
+
+重要的是知道视图仅仅是用来查看存储在别处的数据的一种设施。视图本身不包含数据，因此它们返回的数据是从其他表中检索出来的。在添加或更改这些表中的数据时，视图将返回改变过的数据。
+
+#### 规则和限制
+
+下面是关于视图创建和使用的一些最常见的规则和限制。
+
+- 与表一样，视图必须唯一命名（不能给视图取与别的视图或表相同的名字）。 
+- 对于可以创建的视图数目没有限制。
+- 为了创建视图，必须具有足够的访问权限。这些限制通常由数据库管理人员授予。
+- 视图可以嵌套，即可以利用从其他视图中检索数据的查询来构造一个视图。
+- ORDER BY可以用在视图中，但如果从该视图检索数据SELECT中也含有ORDER BY，那么该视图中的ORDER BY将被覆盖。
+- 视图不能索引，也不能有关联的触发器或默认值。
+- 视图可以和表一起使用。例如，编写一条联结表和视图的SELECT语句。
+
+#### 使用
+
+- 视图用`CREATE VIEW 视图名 AS SELECT xxx FROM 表`语句来创建。
+- 使用SHOW CREATE VIEW viewname；来查看创建视图的语句。
+- 用DROP删除视图，其语法为DROP VIEW viewname;。 
+- 更新视图时，可以先用DROP再用CREATE，也可以直接用CREATE OR REPLACE VIEW。如果要更新的视图不存在，则第2条更新语句会创建一个视图；如果要更新的视图存在，则第2条更新语句会替换原有视图。
+
+#### 利用视图简化复杂的联结
+
+视图的最常见的应用之一是隐藏复杂的SQL，这通常都会涉及联结。
+
+~~~mysql
+CREATE VIEW productcustomers AS
+SELECT cust_name,cust_contact,prod_id
+FROM customers c, orders o,orderitems oi
+WHERE c.cust_id = o.cust_id 
+AND oi.order_num = o.order_num;
+~~~
+
+![image-20211025092422083](./img/image-20211025092422083.png)
+
+~~~mysql
+SHOW CREATE VIEW productcustomers;
+~~~
+
+![image-20211025092446816](./img/image-20211025092446816.png)
+
+CREATE VIEW 中的内容：
+
+~~~mysql
+CREATE 
+ALGORITHM=UNDEFINED 
+DEFINER=`root`@`localhost` 
+SQL SECURITY DEFINER VIEW `productcustomers` 
+AS select `c`.`cust_name` 
+AS `cust_name`,`c`.`cust_contact` 
+AS `cust_contact`,`oi`.`prod_id` 
+AS `prod_id` 
+from ((`customers` `c` join `orders` `o`) join `orderitems` `oi`) 
+where ((`c`.`cust_id` = `o`.`cust_id`) 
+and (`oi`.`order_num` = `o`.`order_num`))
+~~~
+
+> 创建可重用的视图 创建不受特定数据限制的视图是一种好办法。扩展视图的范围不仅使得它能被重用，而且甚至更有用。这样做不需要创建和维护多个类似视图。
+
+
+#### 用视图重新格式化检索出的数据
+
+~~~mysql
+SELECT concat(rtrim(vend_name),"(",rtrim(vend_country),")")
+AS vend_title
+FROM vendors v
+ORDER BY vend_name;
+~~~
+
+![image-20211025093443020](./img/image-20211025093443020.png)
+
+现在，假如经常需要这个格式的结果。不必在每次需要时执行联结，创建一个视图，每次需要时使用它即可。
+
+~~~mysql
+CREATE VIEW vendorlocations AS
+SELECT concat(rtrim(vend_name),"(",rtrim(vend_country),")")
+AS vend_title
+FROM vendors v
+ORDER BY vend_name;
+~~~
+
+![image-20211025093616624](./img/image-20211025093616624.png)
+
+过滤视图添加 WHERE 关键字进行判断
+
+#### 更新视图
+
+视图是可更新的（即，可以对它们使用INSERT、UPDATE和DELETE）。更新一个视图将更新其基表（可以回忆一下，视图本身没有数据）。如果你对视图增加或删除行，实际上是对其基表增加或删除行。
+
+如果视图定义中有以下操作，则不能进行视图的更新：
+
+- 分组（使用GROUP BY和HAVING）；
+- 联结；
+- 子查询；
+- 并；
+- 聚集函数（Min()、Count()、Sum()等）；
+- DISTINCT； 
+- 导出（计算）列
+
+> **将视图用于检索** 一般，应该将视图用于检索（SELECT语句）而不用于更新（INSERT、UPDATE和DELETE）。
+
+### 第二十一章： Mysql 存储过程
+
