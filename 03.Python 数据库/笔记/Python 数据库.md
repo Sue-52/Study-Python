@@ -1994,3 +1994,181 @@ ORDER BY vend_name;
 
 ### 第二十一章： Mysql 存储过程
 
+存储过程和函数是  事先经过编译并存储在数据库中的一段 SQL 语句的集合，调用存储过程和函数可以简化应用开发人员的很多工作，减少数据在数据库和应用服务器之间的传输，对于提高数据处理的效率是有好处的。	
+
+​	 存储过程和函数的区别在于函数必须有返回值，而存储过程没有。
+
+​	 函数 ： 是一个有返回值的过程；
+
+​	 过程 ： 是一个没有返回值的函数；
+
+简单的来说就是为了以后的使用而保存的一条或多条Mysql语句的集合。
+
+#### 为什么使用存储过程
+
+- 通过把处理封装在容易使用的单元中，简化复杂的操作（正如前面例子所述）。 
+- 由于不要求反复建立一系列处理步骤，这保证了数据的完整性。如果所有开发人员和应用程序都使用同一（试验和测试）存储过程，则所使用的代码都是相同的。
+这一点的延伸就是防止错误。需要执行的步骤越多，出错的可能性就越大。防止错误保证了数据的一致性。
+- 简化对变动的管理。如果表名、列名或业务逻辑（或别的内容）有变化，只需要更改存储过程的代码。使用它的人员甚至不需要知道这些变化。
+这一点的延伸就是安全性。通过存储过程限制对基础数据的访问减少了数据讹误（无意识的或别的原因所导致的数据讹误）的机会。
+- 提高性能。因为使用存储过程比使用单独的SQL语句要快。
+- 存在一些只能用在单个请求中的MySQL元素和特性，存储过程可以使用它们来编写功能更强更灵活的代码。
+
+总结就是：简单、安全、高性能。
+
+不过在将SQL代码转换为存储过程前，也必须知道其的缺陷：
+
+- 一般来说，存储过程的编写比基本SQL语句复杂，编写存储过程需要更高的技能，更丰富的经验。
+- 你可能没有创建存储过程的安全访问权限。许多数据库管理员限制存储过程的创建权限，允许用户使用存储过程，但不允许他们创建存储过程。
+
+> Mysql将编写存储过程的安全和访问与执行存储过程的安全和访问区分开了。这样你不能（或不想）编写自己的存储过程，也仍然可以在适当的时候执行别的存储过程。
+
+#### 创建存储过程
+
+**语法格式：**
+
+~~~mysql
+CREATE
+    [DEFINER = { user | CURRENT_USER }]
+　PROCEDURE sp_name ([proc_parameter[,...]])
+    [characteristic ...] routine_body
+ 
+proc_parameter:
+    [ IN | OUT | INOUT ] param_name type
+ 
+characteristic:
+    COMMENT 'string'
+  | LANGUAGE SQL
+  | [NOT] DETERMINISTIC
+  | { CONTAINS SQL | NO SQL | READS SQL DATA | MODIFIES SQL DATA }
+  | SQL SECURITY { DEFINER | INVOKER }
+ 
+routine_body:
+　　Valid SQL routine statement
+ 
+[begin_label:] BEGIN
+　　[statement_list]
+　　　　……
+END [end_label]
+~~~
+
+- IN 输入参数：表示调用者向过程传入值（传入值可以是字面量或变量）
+- OUT 输出参数：表示过程向调用者传出值(可以返回多个值)（传出值只能是变量）
+- INOUT 输入输出参数：既表示调用者向过程传入值，又表示过程向调用者传出值（值只能是变量）
+
+**声明语句结束符：**
+
+~~~mysql
+DELIMITER $$
+或
+DELIMITER //
+~~~
+
+**声明存储过程：**
+
+~~~mysql
+CREATE PROCEDURE demo_in_parameter(IN p_in int)  
+~~~
+
+**存储过程开始和结束符号：** -- 可嵌套多个
+
+> 每个嵌套块及其中的每条语句，必须以分号结束，表示过程体结束的begin-end块(又叫做复合语句compound statement)，则不需要分号。
+
+~~~mysql
+BEGIN .... END
+~~~
+
+为语句块贴标签：
+
+~~~mysql
+[begin_label:] BEGIN
+　　[statement_list]
+END [end_label]
+~~~
+
+**变量赋值：**
+
+~~~mysql
+SET @p_in=1
+~~~
+
+**变量定义：**
+
+~~~mysql
+-- Declere 变量名 数据类型...
+DECLARE l_int int unsigned default 4000000; 
+~~~
+
+**创建Mysql存储过程、存储函数：**
+
+~~~mysql
+CREATE PROCEDURE 存储过程名（参数）
+~~~
+
+**存储过程体：**
+
+~~~mysql
+CREATE FUNCTION 存储函数名（参数）
+~~~
+
+#### 删除存储函数
+
+语法格式：
+
+~~~mysql
+DROP PROCEDURE xxx;
+~~~
+
+![image-20211027174519517](./img/image-20211027174519517.png)
+
+> 如果指定的过程不存在，则`Drop Procedure` 将产生一个错误。当过程存在则删除。可以使用`Drop Procedure If Exists`
+
+#### 使用参数
+
+变量（variable）内存中一个特定的位置，用来临时存储数据。
+
+~~~mysql
+DROP PROCEDURE IF EXISTS mysql_scirpt.productpricing;
+DELIMITER \\
+CREATE PROCEDURE `productpricing`(
+	OUT pl Decimal(8,2),
+	OUT ph Decimal(8,2),
+	OUT pa Decimal(8,2)
+)
+BEGIN
+	SELECT Min(prod_price)
+	INTO pl
+	FROM products;
+	SELECT Max(prod_price)
+	INTO ph
+	FROM products;
+	SELECT Avg(prod_price)
+	INTO pa
+	FROM products;
+END
+
+DELIMITER ;
+~~~
+
+此存储过程接受3个参数：pl存储产品最低价格，ph存储产品最高价格，pa存储产品平均价格。每个参数必须具有指定的类型，这里使用十进制值。关键字OUT指出相应的参数用来从存储过程传出一个值（返回给调用者）。MySQL支持IN（传递给存储过程）、OUT（从存储过程传出，如这里所用）和INOUT（对存储过程传入和传出）类型的参数。存储过程的代码位于BEGIN和END语句内，如前所见，它们是一系列SELECT语句，用来检索值，然后保存到相应的变量（通过指定INTO关键字）。
+
+> 参数的数据类型：存储过程的参数允许的数据类型和表中使用的数据类型相同。
+
+~~~mysql
+{ CALL mysql_scirpt.productpricing(?,?,?) }
+~~~
+
+这是生成后的SQL文件。
+
+> 变量名：所有的Mysql变量都必须以 @ 开始。
+
+在调用时，这条语句并不显示是任何数据。它返回以后可以显示（或在其他处理中使用）的变量。
+
+#### 建立只能存储过程
+
+考虑这个场景。你需要获得与以前一样的订单合计，但需要对合计增加营业税，不过只针对某些顾客（或许是你所在州中那些顾客）。那么，你需要做下面几件事情：
+
+- 获得合计（与以前一样）；
+- 把营业税有条件地添加到合计；
+- 返回合计（带或不带税）。
+
